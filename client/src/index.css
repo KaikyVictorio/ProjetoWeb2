@@ -3,7 +3,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #ffffff;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -34,8 +34,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
+    --text: #1e1f20;
+    --text-h: #181a1e;
     --bg: #16171d;
     --border: #2e303a;
     --code-bg: #1f2028;
@@ -57,8 +57,9 @@ body {
 }
 
 #root {
-  width: 1126px;
+  width: 100%;
   max-width: 100%;
+  min-width: 100%;
   margin: 0 auto;
   text-align: center;
   border-inline: 1px solid var(--border);

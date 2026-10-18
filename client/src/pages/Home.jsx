@@ -11,10 +11,10 @@ export default function Home() {
   }, []);
 
   return (
-    <section className>
-      <h1 className>Bem-vindo</h1>
-      <p className>Página inicial do projeto.</p>
-      <p className>API: {status}</p>
+    <section>
+      <h1>Bem-vindo</h1>
+      <p>Página inicial do projeto.</p>
+      <p>API: {status}</p>
     </section>
   );
 }
