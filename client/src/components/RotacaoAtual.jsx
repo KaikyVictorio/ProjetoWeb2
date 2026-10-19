@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import CapaItem from "./CapaItem";
 import { ordem, rotacao, wishlist } from "../data/rotacao";
+import AdicionarItem from "./AdicionarItem";
 
 export default function RotacaoAtual() {
   const [indice, setIndice] = useState(0);
@@ -11,6 +12,9 @@ export default function RotacaoAtual() {
     setIndice((i) => (i + 1) % ordem.length);
   }
 
+    const MAX = 4;
+    const itens = atual.itens.slice(0, MAX);
+
   return (
     <>
       <p className="pb-5 pt-3 mb-10 font-mono text-[30px] text-left tracking-wide">
@@ -19,9 +23,15 @@ export default function RotacaoAtual() {
 
       <div className="flex items-center gap-3">
         <div className="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4">
-          {atual.itens.slice(0, 4).map((item) => (
+        {itens.map((item) => (
             <CapaItem key={item.id} item={item} tipo={atual.tipo} />
-          ))}
+        ))}
+
+        {itens.length < MAX && (
+            <AdicionarItem
+            onClick={() => console.log("adicionar em", ordem[indice])}
+            />
+        )}
         </div>
 
         <button

@@ -16,7 +16,7 @@ export default function Navbar() {
             <NavLink to="/perfil" className={linkClass}>Meu Perfil</NavLink>
           </div>
         </div>
-        <span class="absolute bottom-0 left-0 w-full h-[3px] bg-[linear-gradient(to_right,#43A0B0,#eab308,transparent)]"></span>
+        <span class="absolute bottom-0 left-0 w-full h-[3px] bg-[linear-gradient(to_right,transparent,#eab308,transparent)]"></span>
       </nav>
     </header>
   );

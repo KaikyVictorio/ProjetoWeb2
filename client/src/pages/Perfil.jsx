@@ -2,6 +2,7 @@ import Card from "../components/Card";
 import { usuario } from "../data/usuario";
 import MenuBotoes from "../components/MenuBotoes";
 import RotacaoAtual from "../components/RotacaoAtual";
+import Estatisticas from "../components/Estatisticas";
 
 export default function Perfil() {
   return (
@@ -58,14 +59,17 @@ export default function Perfil() {
           <RotacaoAtual />
         </Card>
 
-        <Card titulo="Estatísticas">
-          <div className="flex flex-wrap gap-2">
-          </div>
-        </Card>
-
+        <div className="grid items-start gap-5 md:grid-cols-[2fr_1fr]">
         <Card titulo="Atividade recente">
           <p className="text-slate-400">Nenhuma atividade ainda.</p>
         </Card>
+
+        <Card titulo="Estatísticas">
+          <Estatisticas />
+          <div className="flex flex-wrap gap-2">
+          </div>
+        </Card>
+        </div>
       </div>
     </div>
   );
