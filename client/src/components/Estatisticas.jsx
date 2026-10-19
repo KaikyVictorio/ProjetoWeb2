@@ -9,7 +9,7 @@ export default function Estatisticas() {
         {estatisticas.map((e) => (
           <div
             key={e.nome}
-            className="border-2 border-neutral-800 bg-white py-2 text-center text-black shadow-[2px_2px_0_0_#000]"
+            className="border-1 rounded border-neutral-800 bg-white py-2 text-center text-black shadow-[2px_2px_0_0_#000]"
             style={{ borderTopWidth: 8, borderTopColor: e.cor }}
           >
             <p className="text-2xl font-extrabold leading-none">{e.total}</p>
@@ -21,7 +21,7 @@ export default function Estatisticas() {
       <div className="my-4 border-t-2 border-dashed border-neutral-400" />
 
           <p className="flex items-baseline gap-2">
-        <span className="text-5xl font-extrabold leading-none">{totalAno}</span>
+        <span className="text-4xl font-extrabold leading-none">{totalAno}</span>
         <span className="font-mono text-xs text-neutral-500">logs este ano</span>
       </p>
 

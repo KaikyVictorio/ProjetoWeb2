@@ -17,7 +17,7 @@ export default function RotacaoAtual() {
 
   return (
     <>
-      <p className="pb-5 pt-3 mb-10 font-mono text-[30px] text-left tracking-wide">
+      <p className="pb-5 pt-3 mb-10 font-menu font-bold text-[33px] text-left tracking-widest">
         {atual.rotulo}
       </p>
 

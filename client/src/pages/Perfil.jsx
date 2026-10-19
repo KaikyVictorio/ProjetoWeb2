@@ -7,9 +7,9 @@ import Estatisticas from "../components/Estatisticas";
 export default function Perfil() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-13 md:flex-row md:items-start">
-    <aside className="w-full md:sticky md:top-4 md:w-63 md:shrink-0">
-        <Card titulo="@ana_banana" className="rounded-xl outline outline-1 outline-offset-3 outline-slate-700 shadow-[6px_0px_0_0_#171717]">
-        <div className="mx-auto h-50 w-50 overflow-hidden rounded-full border border-slate-600 bg-slate-700">
+    <aside className="w-full md:sticky md:top-4 md:w-66 md:shrink-0">
+        <Card  className="rounded-xl outline outline-1 outline-offset-1 outline-slate-700 shadow-[6px_2px_0_0_#333333]">
+        <div className="mx-auto h-50 w-50 overflow-hidden rounded-full border border-slate-600 outline outline-1 outline-offset-4 outline-slate-200 bg-slate-700">
             {usuario.foto ? (
             <img
                 src={usuario.foto}
@@ -23,19 +23,20 @@ export default function Perfil() {
             )}
         </div>
 
-        <h1 className="mb-3! mt-2! text-left text-[30px]! font-bold leading-[1]!">{usuario.nome}</h1>
-        <p className=" rounded-md text-left text-sm text-black">
+        <h1 className="mb-0! mt-2! text-[29px]! font-bold font-menu! leading-[1]!">{usuario.nome}</h1>
+        <h3 className="mb-3 font-menu! text-[17px] text-neutral-700">@{usuario.usuario}</h3>
+        <p className=" rounded-md text-left text-sm text-black ">
             {usuario.bio}
         </p>
 
           
-          <div className="mt-4 flex gap-4 text-sm">
-          <div class="mx-auto flex items-center justify-center gap-4 border-t border-b border-black py-4 my-0 max-w-max">
-            <span><strong>{usuario.seguidores}</strong> seguidores</span>
-            <span><strong>{usuario.seguindo}</strong> seguindo</span>
+          <div className="mt-4 flex gap-4 text-[17px]">
+          <div class="mx-auto flex items-center justify-center gap-4 border-t border-b border-slate-300 py-4 my-0 max-w-max">
+            <span><strong className="text-[20px]">{usuario.seguidores}</strong> seguidores</span>
+            <span><strong className="text-[20px]">{usuario.seguindo}</strong> seguindo</span>
           </div></div>
 
-<dl className="mt-4 font-mono text-sm">
+<dl className="mt-1 font-mono text-sm">
   {usuario.infos.map((info) => (
     <div
       key={info.rotulo}
@@ -46,7 +47,7 @@ export default function Perfil() {
     </div>
   ))}
 </dl>
-          <button className="mt-4 w-full rounded bg-slate-300 px-4 py-1 font-semibold hover:bg-gray-400 text-sm">
+          <button className="mt-4 rounded-lg bg-gray-800 px-13 py-2 font-semibold hover:bg-gray-700 tracking-wide text-white text-sm">
             Editar perfil
           </button>
         </Card>
@@ -55,7 +56,7 @@ export default function Perfil() {
       {/* Coluna principal: vários cards empilhados */}
       <div className="flex min-w-0 flex-1 flex-col gap-5">
         <MenuBotoes />
-        <Card titulo="Rotação atual" className="bg-[radial-gradient(ellipse_at_center,#f0f0f0_35%,#fff_100%)]!">
+        <Card titulo="Rotação atual" className="">
           <RotacaoAtual />
         </Card>
 
