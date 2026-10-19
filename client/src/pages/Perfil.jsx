@@ -1,12 +1,13 @@
 import Card from "../components/Card";
 import { usuario } from "../data/usuario";
 import MenuBotoes from "../components/MenuBotoes";
+import RotacaoAtual from "../components/RotacaoAtual";
 
 export default function Perfil() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-13 md:flex-row md:items-start">
     <aside className="w-full md:sticky md:top-4 md:w-63 md:shrink-0">
-        <Card titulo="@ana_banana" className="rounded-sm shadow-[6px_0px_0_0_#171717]">
+        <Card titulo="@ana_banana" className="rounded-xl outline outline-1 outline-offset-3 outline-slate-700 shadow-[6px_0px_0_0_#171717]">
         <div className="mx-auto h-50 w-50 overflow-hidden rounded-full border border-slate-600 bg-slate-700">
             {usuario.foto ? (
             <img
@@ -21,7 +22,7 @@ export default function Perfil() {
             )}
         </div>
 
-        <h1 className="mb-3! mt-2! text-left text-[33px]! font-bold leading-[1]!">{usuario.nome}</h1>
+        <h1 className="mb-3! mt-2! text-left text-[30px]! font-bold leading-[1]!">{usuario.nome}</h1>
         <p className=" rounded-md text-left text-sm text-black">
             {usuario.bio}
         </p>
@@ -44,8 +45,7 @@ export default function Perfil() {
     </div>
   ))}
 </dl>
-
-          <button className="mt-4 w-full rounded bg-yellow-500 px-4 py-1 font-semibold hover:bg-gray-400">
+          <button className="mt-4 w-full rounded bg-slate-300 px-4 py-1 font-semibold hover:bg-gray-400 text-sm">
             Editar perfil
           </button>
         </Card>
@@ -54,20 +54,12 @@ export default function Perfil() {
       {/* Coluna principal: vários cards empilhados */}
       <div className="flex min-w-0 flex-1 flex-col gap-5">
         <MenuBotoes />
-        <Card titulo="Rotação atual">
-          <p className="text-slate-300">{usuario.sobre}</p>
+        <Card titulo="Rotação atual" className="bg-[radial-gradient(ellipse_at_center,#f0f0f0_35%,#fff_100%)]!">
+          <RotacaoAtual />
         </Card>
 
         <Card titulo="Estatísticas">
           <div className="flex flex-wrap gap-2">
-            {usuario.interesses.map((i) => (
-              <span
-                key={i}
-                className="rounded-full bg-slate-700 px-3 py-1 text-sm text-slate-200"
-              >
-                {i}
-              </span>
-            ))}
           </div>
         </Card>
 

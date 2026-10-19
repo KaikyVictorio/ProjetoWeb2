@@ -7,9 +7,6 @@ export const usuario = {
   bio: "and the universe said: you're the universe tasting itself, reading its own code.",
   seguidores: 100,
   seguindo: 15,
-  interesses: [""],
-  sobre:
-    "",
     infos: [
     { rotulo: "idade", valor: "20" },
     { rotulo: "from", valor: "Brazil" },

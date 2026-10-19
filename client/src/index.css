@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+  --font-menu: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
