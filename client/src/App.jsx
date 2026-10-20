@@ -4,6 +4,11 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Sobre from "./pages/Sobre";
 import Perfil from "./pages/Perfil";
+import PerfilInicio from "./pages/perfil/PerfilInicio";
+import PerfilLogs from "./pages/perfil/PerfilLogs";
+import PerfilFavoritos from "./pages/perfil/PerfilFavoritos";
+import PerfilReviews from "./pages/perfil/PerfilReviews";
+import PerfilWishlist from "./pages/perfil/PerfilWishlist";
 
 export default function App() {
   return (
@@ -16,7 +21,13 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/sobre" element={<Sobre />} />
-          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil" element={<Perfil />}>
+            <Route index element={<PerfilInicio />} />
+            <Route path="logs" element={<PerfilLogs />} />
+            <Route path="favoritos" element={<PerfilFavoritos />} />
+            <Route path="reviews" element={<PerfilReviews />} />
+            <Route path="wishlist" element={<PerfilWishlist />} />
+          </Route>
         </Routes>
       </main>
       <Footer />

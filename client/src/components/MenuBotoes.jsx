@@ -2,9 +2,10 @@ import { NavLink } from "react-router-dom";
 
 const itens = [
   { to: "/perfil", label: "perfil" },
-  { to: "/", label: "favoritos" },
-  { to: "/", label: "logs" },
-  { to: "/", label: "wishlist" },
+  { to: "/perfil/favoritos", label: "favoritos" },
+  { to: "/perfil/logs", label: "acervo" },
+  { to: "/perfil/reviews", label: "logs" },
+  { to: "/perfil/wishlist", label: "wishlist" },
 ];
 
 const base =
@@ -16,8 +17,8 @@ const classe = ({ isActive }) =>
   `${base} ${isActive ? "bg-[#FDD35D]" : "bg-white"}`;
 
 const classeBotaoAcao =
-  "rounded border border-slate-300 px-3 py-2 font-mono uppercase text-[16px] font-bold text-black " +
-  "bg-[#f5f5ff] shadow-[2px_1px_0_0_#554769] transition ";
+  "rounded-sm border border-slate-300 px-3 py-2 font-mono uppercase text-[16px] font-bold text-white " +
+  "bg-gray-700 shadow-[2px_1px_0_0_#554769] transition ";
 
 export default function MenuBotoes({ onNovoLog = () => {} }) {
   return (

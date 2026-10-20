@@ -57,7 +57,7 @@ export default function RotacaoAtual() {
             ))}
         </div>
 
-        <Link to="/wishlist" className="ml-auto font-mono text-xs underline">
+        <Link to="/perfil/wishlist" className="ml-auto font-mono text-xs underline">
           ver wishlist
         </Link>
       </div>

@@ -1,13 +1,12 @@
 import Card from "../components/Card";
 import { usuario } from "../data/usuario";
 import MenuBotoes from "../components/MenuBotoes";
-import RotacaoAtual from "../components/RotacaoAtual";
-import Estatisticas from "../components/Estatisticas";
+import { Outlet } from "react-router-dom";
 
 export default function Perfil() {
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-13 md:flex-row md:items-start">
-    <aside className="w-full md:sticky md:top-4 md:w-66 md:shrink-0">
+    <aside className="w-full md:sticky md:top-4 md:w-66 md:shrink-0 space-y-6">
         <Card  className="rounded-xl outline outline-1 outline-offset-1 outline-slate-700 shadow-[6px_2px_0_0_#333333]">
         <div className="mx-auto h-50 w-50 overflow-hidden rounded-full border border-slate-600 outline outline-1 outline-offset-4 outline-slate-200 bg-slate-700">
             {usuario.foto ? (
@@ -51,26 +50,21 @@ export default function Perfil() {
             Editar perfil
           </button>
         </Card>
-      </aside>
 
-      {/* Coluna principal: vários cards empilhados */}
-      <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <MenuBotoes />
-        <Card titulo="Rotação atual" className="">
-          <RotacaoAtual />
-        </Card>
-
-        <div className="grid items-start gap-5 md:grid-cols-[2fr_1fr]">
-        <Card titulo="Atividade recente">
-          <p className="text-slate-400">Nenhuma atividade ainda.</p>
-        </Card>
-
-        <Card titulo="Estatísticas">
-          <Estatisticas />
-          <div className="flex flex-wrap gap-2">
+        <Card titulo="Encontre-me em:">
+          <div class="uppercase font-bold tracking-widest bg-gray-200">
+            <a href="https://" target="_blank" >
+              Instagram
+            </a>
           </div>
         </Card>
-        </div>
+
+      </aside>
+
+      {/* Coluna principal agora está em PerfilInicio! */}
+      <div className="flex min-w-0 flex-1 flex-col gap-5">
+        <MenuBotoes />
+        <Outlet />
       </div>
     </div>
   );
