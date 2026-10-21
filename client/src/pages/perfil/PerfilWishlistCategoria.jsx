@@ -4,7 +4,7 @@ import CapaItem from "../../components/CapaItem";
 import Paginacao from "../../components/Paginacao";
 import { categorias, wishlist } from "../../data/wishlist";
 
-const POR_PAGINA = 4;
+const POR_PAGINA = 30;
 
 export default function PerfilWishlistCategoria() {
   const { slug } = useParams();
