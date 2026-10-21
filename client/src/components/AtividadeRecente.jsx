@@ -26,7 +26,7 @@ export default function AtividadeRecente() {
         >
           <span className="w-10 shrink-0 font-mono text-sm">{item.data}</span>
 
-          <div className="h-26 w-18 shrink-0 overflow-hidden border-2 border-neutral-800 bg-neutral-300">
+          <div className="rounded-xs h-26 w-18 shrink-0 overflow-hidden border-2 border-neutral-600 bg-neutral-300">
             {item.imagem && (
               <img
                 src={item.imagem}

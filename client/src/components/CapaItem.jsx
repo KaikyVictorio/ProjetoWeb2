@@ -1,6 +1,6 @@
 export default function CapaItem({ item }) {
   return (
-    <div className="group relative aspect-[2/3] w-full overflow-hidden border-2 border-neutral-700 bg-neutral-300">
+    <div className="rounded-xs group relative aspect-[2/3] w-full overflow-hidden border-2 border-neutral-600 bg-neutral-300">
       {item.imagem && (
         <img
           src={item.imagem}

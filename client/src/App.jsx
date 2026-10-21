@@ -7,8 +7,9 @@ import Perfil from "./pages/Perfil";
 import PerfilInicio from "./pages/perfil/PerfilInicio";
 import PerfilLogs from "./pages/perfil/PerfilLogs";
 import PerfilFavoritos from "./pages/perfil/PerfilFavoritos";
-import PerfilReviews from "./pages/perfil/PerfilReviews";
+import PerfilAcervo from "./pages/perfil/PerfilAcervo";
 import PerfilWishlist from "./pages/perfil/PerfilWishlist";
+import PerfilWishlistCategoria from "./pages/perfil/PerfilWishlistCategoria";
 
 export default function App() {
   return (
@@ -25,8 +26,9 @@ export default function App() {
             <Route index element={<PerfilInicio />} />
             <Route path="logs" element={<PerfilLogs />} />
             <Route path="favoritos" element={<PerfilFavoritos />} />
-            <Route path="reviews" element={<PerfilReviews />} />
+            <Route path="acervo" element={<PerfilAcervo />} />
             <Route path="wishlist" element={<PerfilWishlist />} />
+            <Route path="wishlist/:slug" element={<PerfilWishlistCategoria />} />
           </Route>
         </Routes>
       </main>

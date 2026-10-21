@@ -3,12 +3,12 @@ import { NavLink } from "react-router-dom";
 const itens = [
   { to: "/perfil", label: "perfil" },
   { to: "/perfil/favoritos", label: "favoritos" },
-  { to: "/perfil/logs", label: "acervo" },
-  { to: "/perfil/reviews", label: "logs" },
+  { to: "/perfil/acervo", label: "acervo" },
+  { to: "/perfil/logs", label: "logs" },
   { to: "/perfil/wishlist", label: "wishlist" },
 ];
 
-const base =
+export const base =
   "rounded-full border border-black px-4 py-2 font-mono text-[16px] font-bold text-black " +
   "shadow-[3px_3px_0_0_#000] transition " +
   "hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0_0_#000]";
