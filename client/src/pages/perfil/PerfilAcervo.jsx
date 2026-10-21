@@ -3,6 +3,7 @@ import Card from "../../components/Card";
 import CapaItem from "../../components/CapaItem";
 import FiltroBotao from "../../components/FiltroBotao";
 import { logs } from "../../data/logs";
+import { usuario } from "../../data/usuario";
 
 const filtros = [
   { tipo: "livro", label: "livro", cor: "#a284da" },
@@ -20,8 +21,8 @@ export default function PerfilAcervo() {
   }
 
   return (
-    <Card>
-      <div className="mb-5 flex flex-wrap justify-center gap-3">
+    <Card titulo="Biblioteca de {@usuario.nome}">
+      <div className="mb-5 flex flex-wrap justify-end gap-3">
         {filtros.map((f) => (
           <FiltroBotao
             key={f.tipo}
