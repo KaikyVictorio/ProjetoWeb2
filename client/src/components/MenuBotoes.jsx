@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 const itens = [
-  { to: "/perfil", label: "perfil" },
+  { to: "/perfil", label: "perfil", end: true },
   { to: "/perfil/favoritos", label: "favoritos" },
   { to: "/perfil/acervo", label: "acervo" },
   { to: "/perfil/logs", label: "logs" },
@@ -18,24 +18,20 @@ const classe = ({ isActive }) =>
 
 const classeBotaoAcao =
   "rounded-sm border border-slate-300 px-3 py-2 font-mono uppercase text-[16px] font-bold text-white " +
-  "bg-gray-700 shadow-[2px_1px_0_0_#554769] transition ";
+  "bg-gray-700 shadow-[2px_1px_0_0_#554769] transition";
 
-export default function MenuBotoes({ onNovoLog = () => {} }) {
+export default function MenuBotoes({ onNovoLog }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-5">
       <nav className="flex flex-wrap gap-3">
         {itens.map((i) => (
-          <NavLink key={i.to} to={i.to} end className={classe}>
+          <NavLink key={i.to} to={i.to} end={i.end} className={classe}>
             {i.label}
           </NavLink>
         ))}
       </nav>
 
-      <button
-        type="button"
-        onClick={onNovoLog}
-        className={classeBotaoAcao}
-      >
+      <button type="button" onClick={onNovoLog} className={classeBotaoAcao}>
         [+] novo log
       </button>
     </div>
