@@ -31,6 +31,8 @@ export default function Perfil() {
   }
 
   return (
+    <div className="bg-cover bg-center bg-fixed bg-repeat bg-size-[200px]"
+      style={{ backgroundImage: "url('https://i.pinimg.com/736x/79/1e/78/791e78da281e281ddbb3a27929943f0b.jpg')" }}>
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-13 md:flex-row md:items-start">
       <aside className="w-full md:sticky md:top-4 md:w-66 md:shrink-0 space-y-6">
         <Card className="rounded-xl outline outline-1 outline-offset-1 outline-slate-700 shadow-[6px_2px_0_0_#333333]">
@@ -48,7 +50,7 @@ export default function Perfil() {
             )}
           </div>
 
-          <h1 className="mb-0! mt-2! text-[29px]! font-bold font-menu! leading-[1]!">{usuario.nome}</h1>
+          <h1 className="mb-0! mt-2! text-[27px]! font-bold font-menu! leading-[1]!">{usuario.nome}</h1>
           <h3 className="mb-3 font-menu! text-[17px] text-neutral-700">@{usuario.usuario}</h3>
           <p className="rounded-md text-left text-sm text-black">{usuario.bio}</p>
 
@@ -96,6 +98,7 @@ export default function Perfil() {
           />
         )}
       </div>
+    </div>
     </div>
   );
 }
