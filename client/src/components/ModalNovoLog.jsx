@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { catalogo } from "../data/catalogo";
+import Avaliacao from "./Avaliacao";
 
 const verbos = {
   livro: { titulo: "Eu li...", antes: "Já li isso antes" },
@@ -12,42 +13,6 @@ const coresCategoria = {
   serie: { rotulo: "série", cor: "#b8941f" },
   jogo: { rotulo: "jogo", cor: "#2aa7b8" },
 };
-
-function Avaliacao({ valor, onChange }) {
-  const tamanho = 35;
-
-  return (
-    <div className="flex">
-      {[1, 2, 3, 4, 5].map((n) => (
-        <span
-          key={n}
-          className="relative block text-neutral-300"
-          style={{ fontSize: tamanho, lineHeight: 1, width: tamanho, height: tamanho }}
-        >
-          ★
-          <span
-            className="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-orange-500"
-            style={{ width: valor >= n ? "100%" : valor === n - 0.5 ? "50%" : "0%" }}
-          >
-            ★
-          </span>
-          <button
-            type="button"
-            aria-label={`${n - 0.5} estrelas`}
-            onClick={() => onChange(valor === n - 0.5 ? 0 : n - 0.5)}
-            className="absolute inset-y-0 left-0 w-1/2"
-          />
-          <button
-            type="button"
-            aria-label={`${n} estrelas`}
-            onClick={() => onChange(valor === n ? 0 : n)}
-            className="absolute inset-y-0 right-0 w-1/2"
-          />
-        </span>
-      ))}
-    </div>
-  );
-}
 
 const botao =
   "rounded-lg border-2 border-black px-3 py-1 font-mono text-sm font-bold uppercase tracking-wide text-black transition hover:translate-x-[1px] hover:translate-y-[1px]";
@@ -90,7 +55,7 @@ export default function ModalNovoLog({ onClose, onSalvar }) {
         style={{ width: "min(900px, 100%)" }}
         className="flex max-h-[85vh] flex-col overflow-hidden rounded-xl border-2 border-black bg-white text-left text-black shadow-[6px_6px_0_0_#000]"
         >
-        <header className="flex shrink-0 items-center justify-between border-b-2 border-neutral-400 bg-neutral-100 px-5 py-3">
+        <header className="flex shrink-0 items-center justify-between border-b-2 border-neutral-300 bg-[radial-gradient(ellipse_at_center,#f0f0f0_35%,#fff_100%)] px-5 py-3">
           <div className="flex items-center gap-3">
             {obra && (
               <button
@@ -220,7 +185,7 @@ export default function ModalNovoLog({ onClose, onSalvar }) {
         </div>
 
         {obra && (
-          <footer className="flex shrink-0 justify-end bg-neutral-700 px-5 py-3">
+          <footer className="flex shrink-0 justify-end bg-neutral-300 px-5 py-3">
             <button
               type="button"
               onClick={salvar}

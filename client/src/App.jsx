@@ -11,6 +11,7 @@ import PerfilAcervo from "./pages/perfil/PerfilAcervo";
 import PerfilWishlist from "./pages/perfil/PerfilWishlist";
 import PerfilWishlistCategoria from "./pages/perfil/PerfilWishlistCategoria";
 import Busca from "./pages/Busca";
+import Obra from "./pages/Obra";
 
 export default function App() {
   return (
@@ -29,6 +30,7 @@ export default function App() {
             <Route path="wishlist/:slug" element={<PerfilWishlistCategoria />} />
           </Route>
           <Route path="/busca" element={<Busca />} />
+          <Route path="/obras/:id" element={<Obra />} />
         </Routes>
       </main>
       <Footer />

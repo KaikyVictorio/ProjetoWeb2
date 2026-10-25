@@ -123,10 +123,10 @@ export default function Busca() {
                   </div>
                   <div className="min-w-0 text-left">
                     <div className="flex flex-wrap items-center gap-3">
-                      <p className="font-menu font-bold text-xl">
+                      <Link to={`/obras/${o.id}`} className="font-menu text-xl font-bold">
                         {o.titulo}{" "}
                         <span className="font-normal text-lg text-neutral-500">{o.ano}</span>
-                      </p>
+                      </Link>
                       <TagTipo tipo={o.categoria} />
                     </div>
                   </div>
