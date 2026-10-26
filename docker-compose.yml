@@ -1,0 +1,26 @@
+services:
+  server:
+    build:
+      context: ./server
+      target: dev
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  client:
+    build:
+      context: ./client
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_PROXY_TARGET=http://server:3001
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - server
