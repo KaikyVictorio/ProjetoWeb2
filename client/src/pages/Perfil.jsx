@@ -34,7 +34,7 @@ export default function Perfil() {
     <div className="bg-cover bg-center bg-fixed bg-repeat bg-size-[170px]"
       style={{ backgroundImage: "url('https://i.pinimg.com/736x/79/1e/78/791e78da281e281ddbb3a27929943f0b.jpg')" }}>
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-13 md:flex-row md:items-start">
-      <aside className="w-full md:sticky md:top-4 md:w-66 md:shrink-0 space-y-6">
+      <aside className="w-full md:sticky md:top-4 md:w-65 md:shrink-0 space-y-6">
         <Card className="rounded-xl outline outline-1 outline-offset-1 outline-slate-700 shadow-[5px_2px_0_0_#424242]">
           <div className="mx-auto h-50 w-50 overflow-hidden rounded-full border border-slate-600 outline outline-1 outline-offset-4 outline-slate-200 bg-slate-700">
             {usuario.foto ? (
@@ -76,14 +76,6 @@ export default function Perfil() {
           <button className="mt-4 rounded-lg bg-gray-800 px-13 py-2 font-semibold hover:bg-gray-700 tracking-wide text-white text-sm">
             Editar perfil
           </button>
-        </Card>
-
-        <Card titulo="Encontre-me em:">
-          <div className="uppercase font-bold tracking-widest bg-gray-200">
-            <a href="https://" target="_blank">
-              Instagram
-            </a>
-          </div>
         </Card>
       </aside>
 

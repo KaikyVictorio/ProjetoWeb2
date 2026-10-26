@@ -52,12 +52,14 @@ export default function Navbar() {
 
   return (
     <header>
-      <nav className="relative bg-white p-4 text-[16px] font-bold uppercase text-black font-menu">
+      <nav className="relative bg-white p-2 text-[16px] font-bold uppercase text-black font-menu">
         <div className="mx-auto grid w-full max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4">
-          
+
           {/* esquerda */}
-          <div className="min-w-0 whitespace-nowrap text-left">
-            <Link to="/">Meu Projeto</Link>
+          <div className="min-w-0 text-left">
+            <Link to="/" aria-label="Página inicial" className="inline-block">
+              <img src="/estante virtual.png" alt="Estante Virtual" className="h-12 w-auto" />
+            </Link>
           </div>
 
           {/* centro */}
@@ -66,9 +68,9 @@ export default function Navbar() {
               buscaAberta ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            <NavLink to="/" end className={linkClass}>Início</NavLink>
+            
+            <NavLink to="/listas" className={linkClass}>Listas</NavLink>
             <NavLink to="/perfil" className={linkClass}>Meu Perfil</NavLink>
-            <NavLink to="/" className={linkClass}>Listas</NavLink>
           </div>
 
           {/* direita */}

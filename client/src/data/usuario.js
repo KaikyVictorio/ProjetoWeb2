@@ -1,9 +1,9 @@
 export const usuario = {
   id: 1,
   nome: "Ana Silva",
-  usuario: "ana_banana",
+  usuario: "username",
   email: "ana@email.com",
-  foto: "https://i.pinimg.com/1200x/ed/7f/bc/ed7fbc9c10cc2d54537ac6ae9923b925.jpg",
+  foto: "https://media.istockphoto.com/id/823231784/pt/vetorial/person-icon-profile-icon-isolated-vector.jpg?s=170667a&w=0&k=20&c=Z8668GgeTNf_Vo3ijkb0_0F6KOdkRd3yZAhC5zc_n2c=",
   bio: "and the universe said: you're the universe tasting itself, reading its own code.",
   seguidores: 100,
   seguindo: 15,
