@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+/* =========================================================
+   TOKENS DO PROJETO (padrão de design DevWeb2)
+   Se o projeto já tiver algum destes no @theme, mantenha só um.
+   ========================================================= */
+@theme {
+  /* Fonte da navbar/logo. Use a classe "font-menu", nunca o nome da fonte. */
+  --font-menu: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  /* Destaque geral (marca-texto, botão principal, item ativo) */
+  --color-destaque: #fdd35d;
+
+  /* Cores por tipo de obra */
+  --color-livro: #7a81e1;
+  --color-serie: #fdd35d;
+  --color-jogo: #75d9e6;
+
+  /* Tinta quase preta usada nas sombras retrô */
+  --color-tinta: #171717;
+}
+
+/* Corpo do site sempre em fonte mono, fundo claro e texto escuro */
+body {
+  @apply bg-white font-mono text-neutral-900 antialiased;
+}
+
+/* =========================================================
+   COMPONENTES REUTILIZÁVEIS (detalhes retrô / neobrutalismo)
+   ========================================================= */
+@layer components {
+  /* Fundo pontilhado das páginas */
+  .fundo-pontilhado {
+    background-color: #fafafa;
+    background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  /* Card com contorno escuro e sombra preta dura (padrão do doc) */
+  .card-retro {
+    @apply rounded-lg bg-white outline outline-slate-700 shadow-[6px_0px_0_0_#171717];
+  }
+
+  /* Botão com sombra dura embaixo e leve "afundar" ao clicar */
+  .botao-retro {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-tinta
+      px-5 py-2.5 text-sm font-bold shadow-[0_3px_0_0_#171717] transition
+      hover:-translate-y-px active:translate-y-0.5 active:shadow-none
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  /* Campo de texto do formulário */
+  .campo-retro {
+    @apply w-full rounded-md border-2 border-neutral-900 bg-white px-3 py-2.5 text-sm
+      placeholder:text-neutral-400 focus:outline-none focus:ring-4 focus:ring-destaque/60;
+  }
+
+  .campo-retro[aria-invalid="true"] {
+    @apply border-red-600 focus:ring-red-200;
+  }
+
+  /* Marca-texto amarelo atrás de títulos */
+  .marca-texto {
+    background-image: linear-gradient(transparent 58%, var(--color-destaque) 58%);
+    padding-inline: 0.15em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+}

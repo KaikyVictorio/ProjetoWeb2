@@ -12,6 +12,10 @@ import PerfilWishlist from "./pages/perfil/PerfilWishlist";
 import PerfilWishlistCategoria from "./pages/perfil/PerfilWishlistCategoria";
 import Busca from "./pages/Busca";
 import Obra from "./pages/Obra";
+import Listas from "./pages/Listas";
+import Lista from "./pages/Lista";
+import PerfilListas from "./pages/perfil/PerfilListas";
+import ListaForm from "./pages/ListaForm";
 
 export default function App() {
   return (
@@ -28,9 +32,14 @@ export default function App() {
             <Route path="acervo" element={<PerfilAcervo />} />
             <Route path="wishlist" element={<PerfilWishlist />} />
             <Route path="wishlist/:slug" element={<PerfilWishlistCategoria />} />
+            <Route path="listas" element={<PerfilListas />} />
           </Route>
           <Route path="/busca" element={<Busca />} />
           <Route path="/obras/:id" element={<Obra />} />
+          <Route path="/listas" element={<Listas />} />
+          <Route path="/listas/:id" element={<Lista />} />
+          <Route path="/listas/nova" element={<ListaForm />} />
+          <Route path="/listas/:id/editar" element={<ListaForm />} />
         </Routes>
       </main>
       <Footer />
