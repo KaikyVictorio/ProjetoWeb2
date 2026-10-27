@@ -107,7 +107,7 @@ export default function Lista() {
         </div>
 
         {lista.descricao && (
-          <p className="mt-5 whitespace-pre-line text-left text-base leading-relaxed text-neutral-800">
+          <p className="mt-5! whitespace-pre-line text-left text-base leading-relaxed text-neutral-900">
             {lista.descricao}
           </p>
         )}

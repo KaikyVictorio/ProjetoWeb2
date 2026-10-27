@@ -12,9 +12,7 @@ export default function Home() {
 
   return (
     <section>
-      <h1>Bem-vindo</h1>
-      <p>Página inicial do projeto.</p>
-      <p>API: {status}</p>
+      <h1>Bem-vindo!</h1>
     </section>
   );
 }

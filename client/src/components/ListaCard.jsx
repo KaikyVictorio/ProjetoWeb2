@@ -12,12 +12,12 @@ export default function ListaCard({ lista }) {
       <Link to={`/listas/${lista.id}`} className="group block">
         <div className="flex">
           {obras.length === 0 ? (
-            <div className="aspect-[2/3] w-[32%] border-2 border-neutral-800 bg-neutral-300" />
+            <div className="aspect-[2/3] w-[32%] border-1 rounded-lg border-neutral-800 bg-neutral-300" />
           ) : (
             obras.map((o, i) => (
               <div
                 key={o.id}
-                className="relative aspect-[2/3] w-[32%] shrink-0 overflow-hidden border-2 border-neutral-800 bg-neutral-300 shadow-[2px_0_0_0_rgba(0,0,0,0.25)]"
+                className="relative aspect-[2/3] w-[35%] shrink-0 overflow-hidden border-1 rounded-lg border-neutral-800 bg-neutral-300 shadow-[2px_0_0_0_rgba(0,0,0,0.25)]"
                 style={{ marginLeft: i === 0 ? 0 : "-15%", zIndex: 5 - i }}
               >
                 {o.imagem && (
@@ -28,7 +28,7 @@ export default function ListaCard({ lista }) {
           )}
         </div>
 
-        <p className="mt-3 font-mono text-lg font-bold leading-tight group-hover:underline">
+        <p className="mt-3 font-menu text-lg font-bold leading-tight group-hover:underline">
           {lista.titulo}
         </p>
       </Link>

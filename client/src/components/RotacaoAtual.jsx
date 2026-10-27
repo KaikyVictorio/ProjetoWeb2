@@ -17,7 +17,7 @@ export default function RotacaoAtual() {
 
   return (
     <>
-      <p className="pb-5 pt-3 mb-10 font-menu font-bold text-[33px] text-left tracking-widest">
+      <p className="pb-5 pt-5 mb-10 font-menu font-bold text-[33px] text-left tracking-widest">
         {atual.rotulo}
       </p>
 
@@ -42,7 +42,7 @@ export default function RotacaoAtual() {
         </button>
       </div>
 
-      <div className="-mx-4 -mb-4 mt-5 flex items-center gap-3 border-t-2 border-dashed border-neutral-400 bg-neutral-100 px-4 py-3 text-black">
+      <div className="-mx-4 -mb-4 mt-10 flex items-center gap-3 border-t-2 border-dashed border-neutral-400 bg-neutral-100 px-4 py-3 text-black">
         <span className="font-mono text-xs uppercase">na fila</span>
 
         <div className="flex gap-2">

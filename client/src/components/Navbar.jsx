@@ -58,7 +58,7 @@ export default function Navbar() {
           {/* esquerda */}
           <div className="min-w-0 text-left">
             <Link to="/" aria-label="Página inicial" className="inline-block">
-              <img src="/estante virtual.png" alt="Estante Virtual" className="h-12 w-auto" />
+              <img src="/estante virtual.png" alt="Estante Virtual" className="h-10 w-auto" />
             </Link>
           </div>
 

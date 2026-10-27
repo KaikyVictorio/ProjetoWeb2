@@ -22,7 +22,7 @@ export default function Estatisticas() {
 
           <p className="flex items-baseline gap-2">
         <span className="text-4xl font-extrabold leading-none">{totalAno}</span>
-        <span className="font-mono text-xs text-neutral-500">logs este ano</span>
+        <span className="font-mono text-sm text-neutral-800">logs este ano</span>
       </p>
 
       <div className="mt-4 flex h-5 overflow-hidden border-2 border-neutral-800">

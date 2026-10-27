@@ -44,10 +44,7 @@ export default function PerfilListas() {
   }
 
   return (
-    <Card>
-      <p className="mb-2 mt-4! border-b border-black pb-2 text-left font-menu font-bold text-[28px] tracking-widest">
-        Suas listas
-      </p>
+    <Card titulo="Minhas listas">
 
       {visiveis.length === 0 ? (
         <p className="py-6 text-left text-sm text-slate-500">

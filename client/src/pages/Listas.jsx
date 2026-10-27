@@ -24,7 +24,7 @@ export default function Listas() {
         {recentes.length === 0 ? (
           <p className="text-slate-400">Nenhuma lista criada ainda.</p>
         ) : (
-          <div className="grid gap-x-15 gap-y-10 sm:grid-cols-2 md:grid-cols-3">
+          <div className="grid gap-x-25 gap-y-10 sm:grid-cols-2 md:grid-cols-3">
             {recentes.map((l) => (
               <ListaCard key={l.id} lista={l} />
             ))}
