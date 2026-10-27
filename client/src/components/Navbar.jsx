@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { usuario } from "../data/usuario";
+import { useAuth } from "../context/AuthContext";
 
 const linkClass = ({ isActive }) =>
   `px-3 py-2 rounded-md transition ${
@@ -9,6 +9,7 @@ const linkClass = ({ isActive }) =>
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const { usuario, sair } = useAuth();
   const [buscaAberta, setBuscaAberta] = useState(false);
   const [menuAberto, setMenuAberto] = useState(false);
   const inputRef = useRef(null);
@@ -68,9 +69,8 @@ export default function Navbar() {
               buscaAberta ? "pointer-events-none opacity-0" : "opacity-100"
             }`}
           >
-            
             <NavLink to="/listas" className={linkClass}>Listas</NavLink>
-            <NavLink to="/perfil" className={linkClass}>Meu Perfil</NavLink>
+            {usuario && <NavLink to="/perfil" className={linkClass}>Meu Perfil</NavLink>}
           </div>
 
           {/* direita */}
@@ -121,6 +121,19 @@ export default function Navbar() {
               </button>
             </form>
 
+            {!usuario ? (
+              <div className="flex shrink-0 items-center gap-2 tracking-wider">
+                <Link to="/login" className="px-2 py-2 text-neutral-500 transition hover:text-black">
+                  Entrar
+                </Link>
+                <Link
+                  to="/cadastro"
+                  className="rounded-sm border border-slate-300 bg-gray-700 px-3 py-2 text-white shadow-[2px_1px_0_0_#554769]"
+                >
+                  Criar conta
+                </Link>
+              </div>
+            ) : (
             <div
               className="relative shrink-0"
               onMouseEnter={abrirMenu}
@@ -152,22 +165,23 @@ export default function Navbar() {
                     role="menu"
                     className="w-40 overflow-hidden rounded-lg border-1 border-neutral-500 bg-white shadow-[2px_2px_0_0_#666]"
                   >
-                    <Link to="/perfil" role="menuitem" onClick={() => setMenuAberto(false)} className={itemMenu}>
+                    <Link to="/perfil/editar" role="menuitem" onClick={() => setMenuAberto(false)} className={itemMenu}>
                       Editar perfil
                     </Link>
                     <Link
-                      to="/configuracoes"
+                      to="/obras/nova"
                       role="menuitem"
                       onClick={() => setMenuAberto(false)}
                       className={`${itemMenu} border-t border-neutral-400`}
                     >
-                      Configurações
+                      Nova obra
                     </Link>
                     <button
                       type="button"
                       role="menuitem"
                       onClick={() => {
                         setMenuAberto(false);
+                        sair();
                         navigate("/login");
                       }}
                       className={`${itemMenu} text-red-700 border-t border-neutral-400`}
@@ -178,6 +192,7 @@ export default function Navbar() {
                 </div>
               )}
             </div>
+            )}
           </div>
         </div>
 

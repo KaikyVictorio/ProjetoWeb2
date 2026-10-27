@@ -2,6 +2,17 @@
 
 @theme {
   --font-menu: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  /* Destaque geral (marca-texto, botão principal, item ativo) */
+  --color-destaque: #fdd35d;
+
+  /* Cores por tipo de obra */
+  --color-livro: #7a81e1;
+  --color-serie: #fdd35d;
+  --color-jogo: #75d9e6;
+
+  /* Tinta quase preta usada nas sombras retrô */
+  --color-tinta: #171717;
 }
 
 :root {
@@ -115,4 +126,43 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+
+/* =========================================================
+   Componentes das telas de login e cadastro (estilo retrô)
+   ========================================================= */
+@layer components {
+  .fundo-pontilhado {
+    background-color: #fafafa;
+    background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  .card-retro {
+    @apply rounded-lg bg-white outline outline-slate-700 shadow-[6px_0px_0_0_#171717];
+  }
+
+  .botao-retro {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-tinta
+      px-5 py-2.5 text-sm font-bold shadow-[0_3px_0_0_#171717] transition
+      hover:-translate-y-px active:translate-y-0.5 active:shadow-none
+      disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .campo-retro {
+    @apply w-full rounded-md border-2 border-neutral-900 bg-white px-3 py-2.5 text-sm
+      placeholder:text-neutral-400 focus:outline-none focus:ring-4 focus:ring-destaque/60;
+  }
+
+  .campo-retro[aria-invalid="true"] {
+    @apply border-red-600 focus:ring-red-200;
+  }
+
+  .marca-texto {
+    background-image: linear-gradient(transparent 58%, var(--color-destaque) 58%);
+    padding-inline: 0.15em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
 }

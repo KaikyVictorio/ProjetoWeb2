@@ -1,4 +1,4 @@
-export const tipos = {
+const tipos = {
   livro: { rotulo: "livro", cor: "#7a8ae1" },
   jogo: { rotulo: "jogo", cor: "#f1d37f" },
   serie: { rotulo: "série", cor: "#75D9e6" },

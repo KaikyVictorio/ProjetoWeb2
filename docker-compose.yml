@@ -5,11 +5,17 @@ services:
       target: dev
     ports:
       - "3001:3001"
+    # server/.env é opcional (copie de server/.env.example para sobrescrever valores)
     env_file:
-      - ./server/.env
+      - path: ./server/.env
+        required: false
+    environment:
+      PORT: 3001
+      DB_PATH: /app/data/estante.db
     volumes:
       - ./server:/app
       - /app/node_modules
+      - dbdata:/app/data
 
   client:
     build:
@@ -24,3 +30,6 @@ services:
       - /app/node_modules
     depends_on:
       - server
+
+volumes:
+  dbdata:

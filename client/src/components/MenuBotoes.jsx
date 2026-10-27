@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 
-const itens = [
-  { to: "/perfil", label: "perfil", end: true },
-  { to: "/perfil/favoritos", label: "favoritos" },
-  { to: "/perfil/acervo", label: "acervo" },
-  { to: "/perfil/logs", label: "logs" },
-  { to: "/perfil/listas", label: "listas" },
-  { to: "/perfil/wishlist", label: "wishlist" },
+const itens = (base) => [
+  { to: base, label: "perfil", end: true },
+  { to: `${base}/favoritos`, label: "favoritos" },
+  { to: `${base}/acervo`, label: "acervo" },
+  { to: `${base}/logs`, label: "logs" },
+  { to: `${base}/listas`, label: "listas" },
+  { to: `${base}/wishlist`, label: "wishlist" },
 ];
 
 export const base =
@@ -21,20 +21,23 @@ const classeBotaoAcao =
   "rounded-sm border border-slate-300 px-3 py-2 font-mono uppercase text-[16px] font-bold text-white " +
   "bg-gray-700 shadow-[2px_1px_0_0_#554769] transition";
 
-export default function MenuBotoes({ onNovoLog }) {
+// `base` é "/perfil" (meu perfil) ou "/usuarios/:id". O botão de novo log só aparece no meu perfil.
+export default function MenuBotoes({ base = "/perfil", onNovoLog }) {
   return (
     <div className="flex w-full flex-wrap items-center justify-between gap-5">
       <nav className="flex flex-wrap gap-3">
-        {itens.map((i) => (
+        {itens(base).map((i) => (
           <NavLink key={i.to} to={i.to} end={i.end} className={classe}>
             {i.label}
           </NavLink>
         ))}
       </nav>
 
-      <button type="button" onClick={onNovoLog} className={classeBotaoAcao}>
-        [+] novo log
-      </button>
+      {onNovoLog && (
+        <button type="button" onClick={onNovoLog} className={classeBotaoAcao}>
+          [+] novo log
+        </button>
+      )}
     </div>
   );
 }

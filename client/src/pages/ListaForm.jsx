@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Card from "../components/Card";
-import { catalogo } from "../data/catalogo";
-import { listas } from "../data/listas";
-import { usuario } from "../data/usuario";
-
-const nomeCategoria = { livro: "livro", serie: "série", jogo: "jogo" };
-
-const limpar = (s) =>
-  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+import { Carregando, MensagemErro } from "../components/Estado";
+import { api } from "../api";
+import { nomeCategoria } from "../constants";
+import { useAuth } from "../context/AuthContext";
+import { useApi } from "../hooks/useApi";
+import { useBuscaObras } from "../hooks/useBuscaObras";
 
 const campo =
   "w-full rounded-md border-2 border-black bg-white p-2 text-sm outline-none focus:ring-2 focus:ring-yellow-300";
@@ -22,21 +20,17 @@ function Formulario({ lista }) {
 
   const [titulo, setTitulo] = useState(lista?.titulo ?? "");
   const [descricao, setDescricao] = useState(lista?.descricao ?? "");
-  const [ids, setIds] = useState(lista?.obraIds ?? []); 
+  const [escolhidas, setEscolhidas] = useState(lista?.obras ?? []);
   const [busca, setBusca] = useState("");
   const [selecionada, setSelecionada] = useState(null);
   const [confirmando, setConfirmando] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState("");
 
-  const termo = limpar(busca.trim());
-  const resultados = termo
-    ? catalogo.filter(
-        (o) => !ids.includes(o.id) && limpar(o.titulo).includes(termo)
-      )
-    : [];
-
-  const escolhidas = ids
-    .map((id) => catalogo.find((o) => o.id === id))
-    .filter(Boolean);
+  const { resultados: encontrados } = useBuscaObras(busca, { limite: 15 });
+  const ids = escolhidas.map((o) => o.id);
+  const resultados = encontrados.filter((o) => !ids.includes(o.id));
+  const mostrarResultados = busca.trim() && !selecionada;
 
   function digitar(e) {
     setBusca(e.target.value);
@@ -50,41 +44,45 @@ function Formulario({ lista }) {
 
   function adicionar() {
     if (!selecionada) return;
-    setIds((atual) => [selecionada.id, ...atual]);
+    setEscolhidas((atual) => [selecionada, ...atual]);
     setSelecionada(null);
     setBusca("");
   }
 
   function remover(id) {
-    setIds((atual) => atual.filter((x) => x !== id));
+    setEscolhidas((atual) => atual.filter((o) => o.id !== id));
   }
 
-  function salvar(e) {
+  async function salvar(e) {
     e.preventDefault();
     if (!titulo.trim()) return;
 
-    const dados = {
-      titulo: titulo.trim(),
-      descricao: descricao.trim(),
-      obraIds: ids,
-    };
-
-    if (editando) {
-      Object.assign(lista, dados);
-      navigate(`/listas/${lista.id}`);
-    } else {
-      listas.unshift({
-        id: Date.now(),
-        ...dados,
-        autor: { usuario: usuario.usuario, foto: usuario.foto },
-      });
-      navigate("/perfil/listas");
+    const dados = { titulo: titulo.trim(), descricao: descricao.trim(), obraIds: ids };
+    setErro("");
+    setSalvando(true);
+    try {
+      if (editando) {
+        await api.put(`/listas/${lista.id}`, dados);
+        navigate(`/listas/${lista.id}`);
+      } else {
+        const criada = await api.post("/listas", dados);
+        navigate(`/listas/${criada.id}`);
+      }
+    } catch (e2) {
+      setErro(e2.message);
+      setSalvando(false);
     }
   }
 
-  function excluir() {
-    listas.splice(listas.indexOf(lista), 1);
-    navigate("/perfil/listas");
+  async function excluir() {
+    setErro("");
+    try {
+      await api.delete(`/listas/${lista.id}`);
+      navigate("/perfil/listas");
+    } catch (e) {
+      setErro(e.message);
+      setConfirmando(false);
+    }
   }
 
   return (
@@ -113,15 +111,14 @@ function Formulario({ lista }) {
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               rows={4}
+              maxLength={1000}
               placeholder="Conte um pouco sobre esta lista (opcional)"
               className={`${campo} resize-none`}
             />
           </label>
 
           <div>
-            <span className="mb-1 block font-mono text-sm">
-              Obras
-            </span>
+            <span className="mb-1 block font-mono text-sm">Obras</span>
 
             <div className="flex items-start gap-2">
               <div className="relative flex-1">
@@ -133,7 +130,7 @@ function Formulario({ lista }) {
                   className={campo}
                 />
 
-                {termo && !selecionada && (
+                {mostrarResultados && (
                   <ul className="mt-1 max-h-[220px] overflow-y-auto border-2 border-black bg-white">
                     {resultados.length === 0 ? (
                       <li className="px-3 py-2 text-xs text-neutral-500">Nada encontrado.</li>
@@ -172,14 +169,11 @@ function Formulario({ lista }) {
                 {escolhidas.map((o) => (
                   <li key={o.id} className="flex items-center gap-3 py-2">
                     <div className="h-[60px] w-10 shrink-0 overflow-hidden border border-neutral-700 bg-neutral-300">
-                      {o.imagem && (
-                        <img src={o.imagem} alt="" className="h-full w-full object-cover" />
-                      )}
+                      {o.imagem && <img src={o.imagem} alt="" className="h-full w-full object-cover" />}
                     </div>
 
                     <p className="min-w-0 flex-1 font-mono text-sm">
-                      <strong>{o.titulo}</strong>{" "}
-                      <span className="text-neutral-500">{o.ano}</span>
+                      <strong>{o.titulo}</strong> <span className="text-neutral-500">{o.ano}</span>
                     </p>
 
                     <button
@@ -201,13 +195,16 @@ function Formulario({ lista }) {
             )}
           </div>
 
+          {erro && <p role="alert" className="text-sm text-red-700">{erro}</p>}
+
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
             <div className="flex items-center gap-3">
               <button
                 type="submit"
-                className={`${botao} p-2! border-black bg-yellow-300 text-black shadow-[2px_2px_0_0_#666]`}
+                disabled={salvando}
+                className={`${botao} p-2! border-black bg-yellow-300 text-black shadow-[2px_2px_0_0_#666] disabled:opacity-60`}
               >
-                salvar
+                {salvando ? "salvando..." : "salvar"}
               </button>
               <Link
                 to={editando ? `/listas/${lista.id}` : "/perfil/listas"}
@@ -244,20 +241,30 @@ function Formulario({ lista }) {
   );
 }
 
+function Aviso({ children }) {
+  return (
+    <div className="mx-auto w-full max-w-3xl px-4 py-10">
+      <Card>
+        {children}
+        <Link to="/listas" className="font-mono text-sm underline">voltar às listas</Link>
+      </Card>
+    </div>
+  );
+}
+
+// Edição: busca a lista e só deixa abrir se for da própria pessoa
+function EditarLista({ id }) {
+  const { usuario } = useAuth();
+  const { dados: lista, carregando, erro, recarregar } = useApi(() => api.get(`/listas/${id}`), [id]);
+
+  if (carregando && !lista) return <Aviso><Carregando /></Aviso>;
+  if (erro || !lista) return <Aviso><MensagemErro erro={erro || "Lista não encontrada."} onTentarDeNovo={recarregar} /></Aviso>;
+  if (lista.autor.id !== usuario.id) return <Aviso><p className="font-mono">Você só pode editar as suas listas.</p></Aviso>;
+
+  return <Formulario key={lista.id} lista={lista} />;
+}
+
 export default function ListaForm() {
   const { id } = useParams();
-  const lista = id ? listas.find((l) => String(l.id) === id) : null;
-
-  if (id && (!lista || lista.autor.usuario !== usuario.usuario)) {
-    return (
-      <div className="mx-auto w-full max-w-3xl px-4 py-10">
-        <Card>
-          <p className="font-mono">Lista não encontrada.</p>
-          <Link to="/listas" className="font-mono text-sm underline">voltar às listas</Link>
-        </Card>
-      </div>
-    );
-  }
-
-  return <Formulario key={id ?? "nova"} lista={lista} />;
+  return id ? <EditarLista id={id} /> : <Formulario key="nova" lista={null} />;
 }
