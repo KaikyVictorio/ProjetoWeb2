@@ -1,15 +1,12 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import Card from "../components/Card";
 import Paginacao from "../components/Paginacao";
 import TagTipo from "../components/TagTipo";
-import { catalogo } from "../data/catalogo";
-import { usuarios } from "../data/usuarios";
+import { Carregando, MensagemErro } from "../components/Estado";
+import { api, consulta } from "../api";
+import { useApi } from "../hooks/useApi";
 
 const POR_PAGINA = 10;
-
-const limpar = (s) =>
-  s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 const abas = [
   { id: "obras", label: "Obras" },
@@ -24,21 +21,19 @@ export default function Busca() {
   const [aba, setAba] = useState("obras");
   const [pagina, setPagina] = useState(1);
 
-  const t = limpar(termo);
-
-  const obras = useMemo(
-    () => (t ? catalogo.filter((o) => limpar(o.titulo).includes(t)) : []),
-    [t]
-  );
-  const pessoas = useMemo(
+  // Busca na API sempre que o termo muda (sem termo, nem chama o servidor)
+  const { dados, carregando, erro, recarregar } = useApi(
     () =>
-      t
-        ? usuarios.filter(
-            (u) => limpar(u.nome).includes(t) || limpar(u.usuario).includes(t)
-          )
-        : [],
-    [t]
+      termo
+        ? Promise.all([
+            api.get(`/obras${consulta({ q: termo, limite: 200 })}`),
+            api.get(`/usuarios${consulta({ q: termo, limite: 200 })}`),
+          ]).then(([obras, pessoas]) => ({ obras, pessoas }))
+        : Promise.resolve({ obras: [], pessoas: [] }),
+    [termo]
   );
+  const obras = dados?.obras ?? [];
+  const pessoas = dados?.pessoas ?? [];
 
   const contagem = { obras: obras.length, usuarios: pessoas.length };
   const lista = aba === "obras" ? obras : pessoas;
@@ -68,7 +63,8 @@ export default function Busca() {
 
   let mensagem;
   if (!termo) mensagem = "Digite algo na busca para encontrar obras e pessoas.";
-  else if (lista.length === 0)
+  else if (carregando && !dados) mensagem = "";
+  else if (!erro && lista.length === 0)
     mensagem = `Nenhum resultado em ${aba === "obras" ? "obras" : "usuários"} para "${termo}".`;
 
   return (
@@ -111,6 +107,8 @@ export default function Busca() {
         )}
 
         <p className="mt-5 font-mono text-sm text-neutral-600">{mensagem}</p>
+        {termo && erro && <MensagemErro erro={erro} onTentarDeNovo={recarregar} />}
+        {termo && carregando && !dados && <Carregando />}
 
         <ul className="mt-5 divide-y divide-dashed divide-neutral-400">
           {aba === "obras"

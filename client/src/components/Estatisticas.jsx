@@ -1,6 +1,4 @@
-import { estatisticas } from "../data/estatisticas";
-
-export default function Estatisticas() {
+export default function Estatisticas({ estatisticas }) {
   const totalAno = estatisticas.reduce((soma, e) => soma + e.ano, 0);
 
   return (

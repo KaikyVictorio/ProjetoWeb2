@@ -2,9 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Card from "../components/Card";
 import CapaItem from "../components/CapaItem";
-import { catalogo } from "../data/catalogo";
-import { listas } from "../data/listas";
-import { usuario } from "../data/usuario";
+import { Carregando, MensagemErro } from "../components/Estado";
+import { api } from "../api";
+import { useAuth } from "../context/AuthContext";
+import { useApi } from "../hooks/useApi";
 
 const botao =
   "rounded-sm border px-3 py-2 font-mono text-sm font-bold uppercase transition hover:translate-x-[1px] hover:translate-y-[1px]";
@@ -12,33 +13,39 @@ const botao =
 export default function Lista() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { usuario } = useAuth();
   const [confirmando, setConfirmando] = useState(false);
+  const [erroExcluir, setErroExcluir] = useState("");
 
-  const lista = listas.find((l) => String(l.id) === id);
+  const { dados: lista, carregando, erro, recarregar } = useApi(() => api.get(`/listas/${id}`), [id]);
 
-  if (!lista) {
+  if (carregando && !lista) {
+    return <div className="mx-auto w-full max-w-5xl px-4 py-10"><Carregando /></div>;
+  }
+
+  if (erro || !lista) {
     return (
       <div className="mx-auto w-full max-w-5xl px-4 py-10">
         <Card>
-          <p className="font-mono">Lista não encontrada.</p>
-          <Link to="/listas" className="font-mono text-sm underline">
-            voltar às listas
-          </Link>
+          <MensagemErro erro={erro || "Lista não encontrada."} onTentarDeNovo={erro && !erro.includes("encontrada") ? recarregar : undefined} />
+          <Link to="/listas" className="font-mono text-sm underline">voltar às listas</Link>
         </Card>
       </div>
     );
   }
 
-  const obras = lista.obraIds
-    .map((oid) => catalogo.find((o) => o.id === oid))
-    .filter(Boolean);
+  const obras = lista.obras;
+  const ehMinha = usuario?.id === lista.autor.id;
 
-  const ehMinha = lista.autor.usuario === usuario.usuario;
-
-  function excluir() {
-    // com backend: DELETE /api/listas/:id
-    console.log("excluir lista", lista.id);
-    navigate("/perfil/listas");
+  async function excluir() {
+    setErroExcluir("");
+    try {
+      await api.delete(`/listas/${lista.id}`);
+      navigate("/perfil/listas");
+    } catch (e) {
+      setErroExcluir(e.message);
+      setConfirmando(false);
+    }
   }
 
   return (
@@ -46,10 +53,7 @@ export default function Lista() {
       <Card>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1 text-left">
-            <h1
-              className="font-mono font-bold"
-              style={{ fontSize: 32, lineHeight: 2, margin: 0 }}
-            >
+            <h1 className="font-mono font-bold" style={{ fontSize: 32, lineHeight: 2, margin: 0 }}>
               {lista.titulo}
             </h1>
 
@@ -61,7 +65,10 @@ export default function Lista() {
                   lista.autor.usuario[0].toUpperCase()
                 )}
               </span>
-              Criado por <strong className="text-black">@{lista.autor.usuario}</strong>
+              Criado por{" "}
+              <Link to={`/usuarios/${lista.autor.id}`} className="font-bold text-black hover:underline">
+                @{lista.autor.usuario}
+              </Link>
               <span>· {obras.length} {obras.length === 1 ? "item" : "itens"}</span>
             </p>
           </div>
@@ -78,18 +85,10 @@ export default function Lista() {
               {confirmando ? (
                 <span className="flex items-center gap-2 font-mono text-sm">
                   Excluir mesmo?
-                  <button
-                    type="button"
-                    onClick={excluir}
-                    className={`${botao} border-black bg-red-500 text-white`}
-                  >
+                  <button type="button" onClick={excluir} className={`${botao} border-black bg-red-500 text-white`}>
                     sim
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmando(false)}
-                    className={`${botao} border-black bg-white text-black`}
-                  >
+                  <button type="button" onClick={() => setConfirmando(false)} className={`${botao} border-black bg-white text-black`}>
                     não
                   </button>
                 </span>
@@ -106,6 +105,8 @@ export default function Lista() {
           )}
         </div>
 
+        {erroExcluir && <p role="alert" className="mt-3 text-left text-sm text-red-700">{erroExcluir}</p>}
+
         {lista.descricao && (
           <p className="mt-5 whitespace-pre-line text-left text-base leading-relaxed text-neutral-800">
             {lista.descricao}
@@ -117,9 +118,7 @@ export default function Lista() {
         ) : (
           <div className="mt-8 pl-7 pr-7 grid grid-cols-3 gap-3 md:grid-cols-5">
             {obras.map((o) => (
-              <Link key={o.id} to={`/obras/${o.id}`}>
-                <CapaItem item={o} />
-              </Link>
+              <CapaItem key={o.id} item={o} />
             ))}
           </div>
         )}

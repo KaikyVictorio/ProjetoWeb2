@@ -1,11 +1,7 @@
 import { Link } from "react-router-dom";
-import { catalogo } from "../data/catalogo";
 
 export default function ListaCard({ lista }) {
-  const obras = lista.obraIds
-    .map((id) => catalogo.find((o) => o.id === id))
-    .filter(Boolean)
-    .slice(0, 5);
+  const obras = lista.obras.slice(0, 5);
 
   return (
     <article className="text-left">
@@ -41,7 +37,10 @@ export default function ListaCard({ lista }) {
             lista.autor.usuario[0].toUpperCase()
           )}
         </span>
-        Criado por <strong className="text-black">@{lista.autor.usuario}</strong>
+        Criado por{" "}
+        <Link to={`/usuarios/${lista.autor.id}`} className="font-bold text-black hover:underline">
+          @{lista.autor.usuario}
+        </Link>
       </p>
     </article>
   );
