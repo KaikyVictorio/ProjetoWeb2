@@ -108,7 +108,7 @@ export default function Lista() {
         {erroExcluir && <p role="alert" className="mt-3 text-left text-sm text-red-700">{erroExcluir}</p>}
 
         {lista.descricao && (
-          <p className="mt-5 whitespace-pre-line text-left text-base leading-relaxed text-neutral-800">
+          <p className="mt-5! whitespace-pre-line text-left text-base leading-relaxed text-neutral-900">
             {lista.descricao}
           </p>
         )}

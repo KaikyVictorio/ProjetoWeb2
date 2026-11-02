@@ -19,11 +19,15 @@ export default function Listas() {
         </Link>
       </div>
 
-      <p className="mb-6 mt-4 pb-10 text-left font-menu font-bold text-[35px] tracking-wide">Listas mais recentes</p>
+      <p className="mb-6 mt-4 pb-10 text-left font-menu font-bold text-[35px] tracking-wide">
+        Listas mais recentes
+      </p>
 
       {erro && <MensagemErro erro={erro} onTentarDeNovo={recarregar} />}
       {carregando && !dados && <Carregando />}
-      {dados && recentes.length === 0 && <p className="text-slate-400">Nenhuma lista criada ainda.</p>}
+      {dados && recentes.length === 0 && (
+        <p className="text-slate-400">Nenhuma lista criada ainda.</p>
+      )}
 
       {recentes.length > 0 && (
         <div className="grid gap-x-15 gap-y-10 sm:grid-cols-2 md:grid-cols-3">
