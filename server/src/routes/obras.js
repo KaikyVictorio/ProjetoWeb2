@@ -54,6 +54,9 @@ router.get("/", (req, res) => {
   const { limite, offset } = paginacao(req.query);
   const condicoes = [];
   const params = [];
+    if (req.query.origem === "externa") {
+    condicoes.push("fonte IS NOT NULL AND id_externo IS NOT NULL");
+  }
 
   const q = texto(req.query.q, 100);
   if (q) {

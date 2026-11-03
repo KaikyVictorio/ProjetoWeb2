@@ -18,6 +18,8 @@ export const obraJson = (o) => ({
   generos: json(o.generos, []),
   sinopse: o.sinopse || "",
   criadoPor: o.criado_por ?? null,
+  fonte: o.fonte ?? null,
+  id_externo: o.id_externo ?? null,
 });
 
 // Versão enxuta para listas e capas

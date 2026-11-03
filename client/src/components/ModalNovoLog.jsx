@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useBuscaObras } from "../hooks/useBuscaObras";
 import Avaliacao from "./Avaliacao";
+import { api } from "../api";
 
 const verbos = {
   livro: { titulo: "Eu li...", antes: "Já li isso antes" },
@@ -31,6 +32,8 @@ export default function ModalNovoLog({ onClose, onSalvar, obraInicial = null, lo
   const [nota, setNota] = useState(logInicial?.nota ?? 0);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
+  const [importandoId, setImportandoId] = useState(null);
+  const [erroImportacao, setErroImportacao] = useState("");
 
   const editando = Boolean(logInicial);
   const { resultados, buscando, erro: erroBusca } = useBuscaObras(busca, { limite: 8 });
@@ -40,6 +43,29 @@ export default function ModalNovoLog({ onClose, onSalvar, obraInicial = null, lo
     window.addEventListener("keydown", fechar);
     return () => window.removeEventListener("keydown", fechar);
   }, [onClose]);
+
+
+  async function selecionarObra(c) {
+  if (importandoId !== null) return;
+
+  setErroImportacao("");
+  setImportandoId(c.id);
+
+  try {
+    let obraLocal = c;
+
+    if (String(c.id).includes(":")) {
+      obraLocal = await api.post("/obras/importar", c);
+    }
+
+    setObra(obraLocal);
+    setImportandoId(null);
+  } catch (e) {
+    setErroImportacao(e.message || "Não foi possível importar a obra.");
+    setImportandoId(null);
+  }
+}
+
 
   async function salvar() {
     setErro("");
@@ -98,12 +124,25 @@ export default function ModalNovoLog({ onClose, onSalvar, obraInicial = null, lo
                 <p className="mt-4 text-sm text-neutral-500">Nada encontrado.</p>
               )}
 
+              {importandoId !== null && (
+                <p className="text-sm text-neutral-600">
+                  Importando obra...
+                </p>
+              )}
+
+              {erroImportacao && (
+                <p className="text-sm text-red-700">
+                  {erroImportacao}
+                </p>
+              )}
+
               <ul className="mt-3 divide-y divide-neutral-400">
                 {resultados.map((c) => (
                   <li key={c.id}>
                     <button
                       type="button"
-                      onClick={() => setObra(c)}
+                      onClick={() => selecionarObra(c)}
+                      disabled={importandoId !== null}
                       className="flex w-full items-center justify-between gap-4 px-1 py-3 text-left font-menu hover:bg-neutral-100"
                     >
                       <span>
