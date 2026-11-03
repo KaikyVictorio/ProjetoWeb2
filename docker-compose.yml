@@ -1,21 +1,41 @@
 services:
+  gateway:
+    build:
+      context: ./gateway
+      target: dev
+    ports:
+      - "3000:3000"
+    environment:
+      - CATALOGO_URL=http://catalogo:4001
+      - LEGADO_URL=http://server:3001
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
+    depends_on:
+      - catalogo
+      - server
+
+  catalogo:
+    build:
+      context: ./services/catalogo
+      target: dev
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./services/catalogo:/app
+      - /app/node_modules
+
   server:
     build:
       context: ./server
       target: dev
     ports:
       - "3001:3001"
-    # server/.env é opcional (copie de server/.env.example para sobrescrever valores)
     env_file:
-      - path: ./server/.env
-        required: false
-    environment:
-      PORT: 3001
-      DB_PATH: /app/data/estante.db
+      - ./server/.env
     volumes:
       - ./server:/app
       - /app/node_modules
-      - dbdata:/app/data
 
   client:
     build:
@@ -24,12 +44,9 @@ services:
     ports:
       - "5173:5173"
     environment:
-      - VITE_PROXY_TARGET=http://server:3001
+      - VITE_PROXY_TARGET=http://gateway:3000
     volumes:
       - ./client:/app
       - /app/node_modules
     depends_on:
-      - server
-
-volumes:
-  dbdata:
+      - gateway
