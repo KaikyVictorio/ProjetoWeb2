@@ -100,6 +100,23 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_logs_obra ON logs(obra_id);
 `);
 
+const colunasObras = db.prepare("PRAGMA table_info(obras)").all();
+const nomesColunas = colunasObras.map((coluna) => coluna.name);
+
+if (!nomesColunas.includes("fonte")) {
+  db.exec("ALTER TABLE obras ADD COLUMN fonte TEXT");
+}
+
+if (!nomesColunas.includes("id_externo")) {
+  db.exec("ALTER TABLE obras ADD COLUMN id_externo TEXT");
+}
+
+db.exec(`
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_obras_fonte_externa
+  ON obras(fonte, id_externo)
+  WHERE fonte IS NOT NULL AND id_externo IS NOT NULL;
+`);
+
 // Executa várias operações como uma só (tudo ou nada)
 export function transacao(fn) {
   db.exec("BEGIN");

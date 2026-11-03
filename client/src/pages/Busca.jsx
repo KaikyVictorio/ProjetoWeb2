@@ -21,6 +21,22 @@ export default function Busca() {
   const [aba, setAba] = useState("obras");
   const [pagina, setPagina] = useState(1);
 
+  const [importando, setImportando] = useState(null);
+
+async function importarObra(obra) {
+  try {
+    setImportando(obra.id);
+
+    const importada = await api.post("/obras/importar", obra);
+
+    navigate(`/obras/${importada.id}`);
+  } catch (erro) {
+    alert(erro.message);
+  } finally {
+    setImportando(null);
+  }
+}
+
   // Busca na API sempre que o termo muda (sem termo, nem chama o servidor)
   const { dados, carregando, erro, recarregar } = useApi(
     () =>
@@ -28,7 +44,19 @@ export default function Busca() {
         ? Promise.all([
             api.get(`/obras${consulta({ q: termo, limite: 200 })}`),
             api.get(`/usuarios${consulta({ q: termo, limite: 200 })}`),
-          ]).then(([obras, pessoas]) => ({ obras, pessoas }))
+            api.get(`/catalogo/obras${consulta({ q: termo })}`),
+          ]).then(([obras, pessoas, externas]) => ({
+              obras: [
+                ...obras.map((o) => ({ ...o, origem: "local" })),
+                ...externas
+                  .filter((e) => !obras.some(
+                    (o) => o.fonte === e.id.split(":")[0] &&
+                          o.id_externo === e.id.split(":").slice(1).join(":")
+                  ))
+                  .map((e) => ({ ...e, origem: "externa" })),
+              ],
+              pessoas,
+            }))
         : Promise.resolve({ obras: [], pessoas: [] }),
     [termo]
   );
@@ -121,10 +149,22 @@ export default function Busca() {
                   </div>
                   <div className="min-w-0 text-left">
                     <div className="flex flex-wrap items-center gap-3">
+                      {o.origem === "externa" ? (
+                      <button
+                        type="button"
+                        onClick={() => importarObra(o)}
+                        disabled={importando === o.id}
+                        className="font-menu text-xl font-bold text-left disabled:opacity-50"
+                      >
+                        {importando === o.id ? "Importando..." : o.titulo}
+                        <span className="font-normal text-lg text-neutral-500"> {o.ano}</span>
+                      </button>
+                    ) : (
                       <Link to={`/obras/${o.id}`} className="font-menu text-xl font-bold">
                         {o.titulo}{" "}
                         <span className="font-normal text-lg text-neutral-500">{o.ano}</span>
                       </Link>
+                    )}
                       <TagTipo tipo={o.categoria} />
                     </div>
                   </div>
