@@ -21,6 +21,9 @@ services:
       target: dev
     ports:
       - "4001:4001"
+    env_file:
+      - path: ./services/catalogo/.env
+        required: false
     volumes:
       - ./services/catalogo:/app
       - /app/node_modules
