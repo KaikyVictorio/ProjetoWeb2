@@ -4,23 +4,27 @@
 // Estampas das "capas" de exemplo. Os mesmos padrões das referências de design.
 const ESTAMPAS = {
   livro: {
-    backgroundColor: "var(--color-livro)",
     backgroundImage:
-      "repeating-linear-gradient(45deg, rgba(255,255,255,.28) 0 10px, transparent 10px 20px)",
+    "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQl__-vIb_Uyw05o7Rao1VVKtszF5QqBHN2vId89-fdIDNpcRZGtPWiDAgX&s=10)'",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   },
   serie: {
-    backgroundColor: "var(--color-serie)",
     backgroundImage:
-      "repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.45) 0 8px, transparent 8px 18px)",
+    "url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAe2EogA5YYshdojGE7ya3RnW63v4OCcPSUwbpOAoPT5YP7C3QUiH91QU&s=10'",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   },
   jogo: {
-    backgroundColor: "var(--color-jogo)",
     backgroundImage:
-      "linear-gradient(rgba(23,23,23,.18) 1px, transparent 1px), linear-gradient(90deg, rgba(23,23,23,.18) 1px, transparent 1px)",
-    backgroundSize: "14px 14px",
+    "url('https://m.media-amazon.com/images/M/MV5BZDQ0ZDkzZjctNGMzMy00NzBiLWFlOTQtZmM3NDU5ZjQxNWQ1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg'",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
   },
 };
-
 const CAPAS_EXEMPLO = [
   { id: "capa-livro", tipo: "livro", etiqueta: "LIVRO", rotacao: "-rotate-6", deslocamento: "translate-y-4" },
   { id: "capa-serie", tipo: "serie", etiqueta: "SÉRIE", rotacao: "rotate-2", deslocamento: "-translate-y-2" },
@@ -67,9 +71,9 @@ export default function PainelBoasVindas({ variante = "login" }) {
           <li
             key={capa.id}
             id={capa.id}
-            className={`card-retro w-32 overflow-hidden ${capa.rotacao} ${capa.deslocamento}`}
+            className={`card-retro w-37 overflow-hidden ${capa.rotacao} ${capa.deslocamento}`}
           >
-            <div className="relative h-40" style={ESTAMPAS[capa.tipo]}>
+            <div className="relative h-55" style={ESTAMPAS[capa.tipo]}>
               <span className="absolute left-2 top-2 rounded-full border-2 border-tinta bg-white px-2 py-0.5 text-[10px] font-bold">
                 {capa.etiqueta}
               </span>
