@@ -6,6 +6,7 @@ import { Carregando, MensagemErro } from "../components/Estado";
 import { api } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useApi } from "../hooks/useApi";
+import Avatar from "../components/Avatar"
 
 const botao =
   "rounded-sm border px-3 py-2 font-mono text-sm font-bold uppercase transition hover:translate-x-[1px] hover:translate-y-[1px]";
@@ -59,11 +60,7 @@ export default function Lista() {
 
             <p className="mt-3 flex items-center gap-2 font-mono text-sm text-neutral-600">
               <span className="grid h-6 w-6 shrink-0 place-items-center overflow-hidden rounded-full border border-neutral-500 bg-slate-700 text-xs text-slate-200">
-                {lista.autor.foto ? (
-                  <img src={lista.autor.foto} alt="" className="h-full w-full object-cover" />
-                ) : (
-                  lista.autor.usuario[0].toUpperCase()
-                )}
+                <Avatar src={lista.autor.foto} nome={lista.autor.usuario} className="h-full w-full" />
               </span>
               Criado por{" "}
               <Link to={`/usuarios/${lista.autor.id}`} className="font-bold text-black hover:underline">

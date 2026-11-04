@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Avatar from "./Avatar"
 
 const SOBREPOSICAO = 30;
 
@@ -54,11 +55,7 @@ export default function ListaCard({ lista }) {
 
         <div className="mt-auto flex items-center gap-2.5 border-t-[1.5px] border-dashed border-[#c3c9d6] pt-3">
           <span className="grid h-[34px] w-[34px] shrink-0 place-items-center overflow-hidden rounded-full border-[1.5px] border-neutral-900 bg-[#FFC800] font-mono text-sm font-bold text-neutral-900">
-            {lista.autor.foto ? (
-              <img src={lista.autor.foto} alt="" className="h-full w-full object-cover" />
-            ) : (
-              lista.autor.usuario[0].toUpperCase()
-            )}
+            <Avatar src={lista.autor.foto} nome={lista.autor.usuario} className="h-full w-full" />
           </span>
           <div className="min-w-0 leading-tight">
             <div className="font-mono text-[11px] uppercase tracking-wider text-slate-500">

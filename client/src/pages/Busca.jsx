@@ -5,6 +5,7 @@ import TagTipo from "../components/TagTipo";
 import { Carregando, MensagemErro } from "../components/Estado";
 import { api, consulta } from "../api";
 import { useApi } from "../hooks/useApi";
+import Avatar from "../components/Avatar"
 
 const POR_PAGINA = 10;
 
@@ -177,11 +178,7 @@ async function importarObra(obra) {
                     className="flex items-center gap-4 py-4 transition hover:translate-x-1"
                   >
                     <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-neutral-700 bg-slate-700 text-2xl font-bold text-slate-300">
-                      {u.foto ? (
-                        <img src={u.foto} alt={`Foto de ${u.nome}`} className="h-full w-full object-cover" />
-                      ) : (
-                        u.nome[0]
-                      )}
+                      <Avatar src={u.foto} nome={u.nome} className="h-full w-full" />
                     </div>
                     <div className="text-left">
                       <p className="font-menu text-lg font-bold">{u.nome}</p>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Avatar from "./Avatar"
 
 const linkClass = ({ isActive }) =>
   `px-3 py-2 rounded-md transition ${
@@ -143,11 +144,7 @@ export default function Navbar() {
             >
               <Link to="/perfil" className="flex items-center gap-2 tracking-wider">
                 <span className="grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-full border border-neutral-400 bg-slate-700 text-sm text-slate-200">
-                  {usuario.foto ? (
-                    <img src={usuario.foto} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    usuario.nome[0]
-                  )}
+                  <Avatar src={usuario.foto} nome={usuario.nome} className="h-full w-full" />
                 </span>
                 <span>{usuario.usuario}</span>
                 <svg
