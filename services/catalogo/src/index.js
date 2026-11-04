@@ -2,14 +2,14 @@
 import express from "express";
 
 import openlibrary from "./providers/openlibrary.js";
-import rawg from "./providers/rawg.js";
+import freetogame from "./providers/freetogame.js";
 import tvmaze from "./providers/tvmaze.js";
 
 const app = express();
 
 const PORT = process.env.PORT || 4001;
 
-const provedores = [openlibrary, tvmaze, rawg];
+const provedores = [openlibrary, tvmaze, freetogame];
 
 app.get("/health", (_req, res) => {
   res.json({

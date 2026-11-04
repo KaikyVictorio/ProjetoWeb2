@@ -42,15 +42,15 @@ export default function ListaCard({ lista }) {
         </div>
       </Link>
 
-      <div className="flex flex-1 flex-col gap-3 px-[18px] pb-[18px] pt-4">
+      <div className="flex flex-1 flex-col gap-2 px-[18px] pb-[18px] pt-4">
         <Link to={`/listas/${lista.id}`}>
-          <h3 className="font-menu text-2xl font-extrabold leading-[1.1] tracking-tight group-hover:underline">
+          <h3 className="font-menu text-2xl font-extrabold leading-[1.1] tracking-tight">
             {lista.titulo}
           </h3>
         </Link>
 
         {lista.descricao && (
-          <p className="font-mono text-sm leading-relaxed">{lista.descricao}</p>
+          <p className="font-mono text-[17px] leading-relaxed">{lista.descricao}</p>
         )}
 
         <div className="mt-auto flex items-center gap-2.5 border-t-[1.5px] border-dashed border-[#c3c9d6] pt-3">

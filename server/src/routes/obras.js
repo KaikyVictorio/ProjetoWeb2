@@ -90,6 +90,7 @@ router.post("/importar", exigirLogin, (req, res) => {
   const fontes = {
     tvmaze: "serie",
     ol: "livro",
+    ftg: "jogo",
   };
 
   const fonte = prefixo;

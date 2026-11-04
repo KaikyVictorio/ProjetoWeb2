@@ -17,7 +17,7 @@ function Mosaico({ itens, editavel, onAdicionar, onRemover }) {
     const [destaque, ...resto] = itens;
 
     return (
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-4 gap-2">
         <div className="col-span-2 row-span-2">
           <CapaItem item={destaque} className="h-full" onRemover={remover(destaque)} />
         </div>
@@ -75,7 +75,7 @@ export default function PerfilFavoritos() {
         <div className="space-y-10 pl-10 pr-10">
           {Object.keys(tituloFavoritos).map((tipo) => (
             <section key={tipo}>
-              <p className="pb-3 pt-3 font-menu font-bold text-[27px] text-left tracking-widest">
+              <p className="pb-3 pt-3 font-menu font-bold text-[30px] text-left tracking-widest">
                 {tituloFavoritos[tipo]}
               </p>
               <Mosaico
