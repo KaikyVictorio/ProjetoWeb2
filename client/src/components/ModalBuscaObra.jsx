@@ -127,17 +127,6 @@ export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onE
             ))}
           </ul>
 
-          <p className="mt-4 text-xs text-neutral-600">
-            Não achou?{" "}
-            <Link
-              to="/obras/nova"
-              onClick={onClose}
-              className="underline"
-            >
-              cadastre a obra
-            </Link>
-            .
-          </p>
         </div>
       </div>
     </div>

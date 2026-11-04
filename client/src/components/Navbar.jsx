@@ -165,14 +165,7 @@ export default function Navbar() {
                     <Link to="/perfil/editar" role="menuitem" onClick={() => setMenuAberto(false)} className={itemMenu}>
                       Editar perfil
                     </Link>
-                    <Link
-                      to="/obras/nova"
-                      role="menuitem"
-                      onClick={() => setMenuAberto(false)}
-                      className={`${itemMenu} border-t border-neutral-400`}
-                    >
-                      Nova obra
-                    </Link>
+
                     <button
                       type="button"
                       role="menuitem"
