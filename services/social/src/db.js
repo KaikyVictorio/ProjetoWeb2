@@ -1,0 +1,39 @@
+import { DatabaseSync } from "node:sqlite";
+import fs from "node:fs";
+import path from "node:path";
+
+// Banco PRÓPRIO do serviço: nenhum outro serviço lê ou escreve aqui.
+const caminho = process.env.SOCIAL_DB_PATH || path.resolve("data/social.db");
+if (caminho !== ":memory:") fs.mkdirSync(path.dirname(caminho), { recursive: true });
+
+export const db = new DatabaseSync(caminho);
+
+// Sem FOREIGN KEY de propósito: os usuários moram em outro serviço.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS seguidores (
+    seguidor_id INTEGER NOT NULL,
+    seguido_id  INTEGER NOT NULL,
+    criado_em   TEXT NOT NULL DEFAULT (datetime('now')),
+    PRIMARY KEY (seguidor_id, seguido_id),
+    CHECK (seguidor_id <> seguido_id)
+  );
+  CREATE INDEX IF NOT EXISTS idx_seguidores_seguido ON seguidores(seguido_id);
+
+  -- Guarda marcadores, ex.: se os dados antigos já foram importados do monólito
+  CREATE TABLE IF NOT EXISTS meta (
+    chave TEXT PRIMARY KEY,
+    valor TEXT NOT NULL
+  );
+`);
+
+export function transacao(fn) {
+  db.exec("BEGIN");
+  try {
+    const resultado = fn();
+    db.exec("COMMIT");
+    return resultado;
+  } catch (erro) {
+    db.exec("ROLLBACK");
+    throw erro;
+  }
+}

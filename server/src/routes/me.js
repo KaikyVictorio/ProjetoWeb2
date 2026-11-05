@@ -3,12 +3,12 @@ import { db } from "../db.js";
 import { exigirLogin } from "../auth.js";
 import { ErroHttp, idParam } from "../util.js";
 
-// Favoritos, wishlist e rotação atual do usuário logado.
-// Cada coleção tem: POST { obraId } para adicionar e DELETE /:obraId para remover.
+// Rotação atual do usuário logado: POST { obraId } para adicionar e DELETE /:obraId para remover.
+// (Favoritos e wishlist agora são dos microsserviços services/favoritos e services/wishlist:
+// o gateway encaminha /api/me/favoritos e /api/me/wishlist para eles.)
 const router = Router();
 router.use(exigirLogin);
 
-const MAX_FAVORITOS = 5; // por categoria
 const MAX_ROTACAO = 4; // por categoria
 
 const NOMES = { livro: "livros", serie: "séries", jogo: "jogos" };
@@ -46,11 +46,6 @@ function colecao(tabela, { limite, mensagemLimite } = {}) {
   });
 }
 
-colecao("favoritos", {
-  limite: MAX_FAVORITOS,
-  mensagemLimite: (cat) => `Você já tem ${MAX_FAVORITOS} ${NOMES[cat]} favoritos. Remova um para adicionar outro.`,
-});
-colecao("wishlist");
 colecao("rotacao", {
   limite: MAX_ROTACAO,
   mensagemLimite: (cat) => `Sua rotação já tem ${MAX_ROTACAO} ${NOMES[cat]}. Remova um para adicionar outro.`,

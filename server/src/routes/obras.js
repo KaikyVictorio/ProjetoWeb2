@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { db } from "../db.js";
 import { exigirLogin, loginOpcional } from "../auth.js";
+import { favoritos, wishlist } from "../colecoes.js";
 import { logJson, obraJson, SELECT_LOG } from "../serializers.js";
 import { ErroHttp, idParam, like, nota, paginacao, texto } from "../util.js";
 
@@ -49,8 +50,15 @@ function exigirDono(obra, usuario) {
   }
 }
 
-// GET /api/obras?q=&categoria=&limite=&offset=
+// GET /api/obras?q=&categoria=&limite=&offset=   |   GET /api/obras?ids=1,2,3  (usado pelos serviços de favoritos e wishlist)
 router.get("/", (req, res) => {
+  if (typeof req.query.ids === "string") {
+    const ids = [...new Set(req.query.ids.split(",").map(Number).filter((n) => Number.isInteger(n) && n > 0))].slice(0, 200);
+    if (ids.length === 0) return res.json([]);
+    const linhas = db.prepare(`SELECT * FROM obras WHERE id IN (${ids.map(() => "?").join(",")})`).all(...ids);
+    return res.json(linhas.map(obraJson));
+  }
+
   const { limite, offset } = paginacao(req.query);
   const condicoes = [];
   const params = [];
@@ -155,7 +163,7 @@ router.post("/", exigirLogin, (req, res) => {
 });
 
 // GET /api/obras/:id  (com média e, se logado, o que o usuário já fez com ela)
-router.get("/:id", loginOpcional, (req, res) => {
+router.get("/:id", loginOpcional, async (req, res) => {
   const obra = obraOuErro(idParam(req.params.id));
   const { media, total } = db
     .prepare("SELECT AVG(nota) AS media, COUNT(*) AS total FROM notas WHERE obra_id = ? AND nota > 0")
@@ -165,10 +173,12 @@ router.get("/:id", loginOpcional, (req, res) => {
 
   if (req.usuario) {
     const uid = req.usuario.id;
+    // favorito e wishlist vêm dos microsserviços; se algum estiver fora do ar, vem false
+    const [favorito, naWishlist] = await Promise.all([favoritos.tem(uid, obra.id), wishlist.tem(uid, obra.id)]);
     resposta.minha = {
       nota: db.prepare("SELECT nota FROM notas WHERE usuario_id = ? AND obra_id = ?").get(uid, obra.id)?.nota ?? 0,
-      favorito: Boolean(db.prepare("SELECT 1 FROM favoritos WHERE usuario_id = ? AND obra_id = ?").get(uid, obra.id)),
-      wishlist: Boolean(db.prepare("SELECT 1 FROM wishlist WHERE usuario_id = ? AND obra_id = ?").get(uid, obra.id)),
+      favorito,
+      wishlist: naWishlist,
     };
   }
   res.json(resposta);
@@ -191,6 +201,8 @@ router.delete("/:id", exigirLogin, (req, res) => {
   const obra = obraOuErro(idParam(req.params.id));
   exigirDono(obra, req.usuario);
   db.prepare("DELETE FROM obras WHERE id = ?").run(obra.id);
+  favoritos.removerObra(obra.id);
+  wishlist.removerObra(obra.id);
   res.status(204).end();
 });
 

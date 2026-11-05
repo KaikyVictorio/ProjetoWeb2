@@ -8,6 +8,7 @@ import obrasRouter from "./routes/obras.js";
 import logsRouter from "./routes/logs.js";
 import listasRouter from "./routes/listas.js";
 import meRouter from "./routes/me.js";
+import internoRouter from "./routes/interno.js";
 
 export const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/obras", obrasRouter);
 app.use("/api/logs", logsRouter);
 app.use("/api/listas", listasRouter);
 app.use("/api/me", meRouter);
+app.use("/api/interno", internoRouter);
 
 app.use("/api", (_req, res) => res.status(404).json({ mensagem: "Rota não encontrada." }));
 

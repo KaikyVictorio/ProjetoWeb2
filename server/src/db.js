@@ -53,6 +53,8 @@ db.exec(`
     PRIMARY KEY (usuario_id, obra_id)
   );
 
+  -- favoritos e wishlist agora são dos serviços services/favoritos e services/wishlist.
+  -- Estas tabelas só são lidas uma vez, para a importação inicial (e recebem o seed de exemplo).
   CREATE TABLE IF NOT EXISTS favoritos (
     usuario_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     obra_id    INTEGER NOT NULL REFERENCES obras(id) ON DELETE CASCADE,
