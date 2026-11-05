@@ -2,6 +2,8 @@ import { Router } from "express";
 import { db } from "../db.js";
 import { exigirLogin, loginOpcional } from "../auth.js";
 import { logJson, obraResumo, SELECT_LOG, usuarioBasico, usuarioCompleto } from "../serializers.js";
+import { favoritos, wishlist, wishlistRecentes } from "../colecoes.js";
+import { contagens, removerUsuario } from "../social.js";
 import { ErroHttp, idParam, like, paginacao, texto } from "../util.js";
 
 const router = Router();
@@ -14,16 +16,20 @@ function usuarioOuErro(id) {
   return usuario;
 }
 
-function agrupar(linhas) {
-  const grupos = { livro: [], serie: [], jogo: [] };
-  for (const o of linhas) grupos[o.categoria]?.push(obraResumo(o));
-  return grupos;
-}
-
-// GET /api/usuarios?q=&limite=
+// GET /api/usuarios?q=&limite=   |   GET /api/usuarios?ids=1,2,3  (usado pelo serviço social)
 router.get("/", (req, res) => {
   const { limite, offset } = paginacao(req.query, 50, 200);
   const q = texto(req.query.q, 60);
+
+  if (typeof req.query.ids === "string") {
+    const ids = [...new Set(req.query.ids.split(",").map(Number).filter((n) => Number.isInteger(n) && n > 0))].slice(0, 200);
+    if (ids.length === 0) return res.json([]);
+    const linhas = db
+      .prepare(`SELECT * FROM usuarios WHERE id IN (${ids.map(() => "?").join(",")})`)
+      .all(...ids);
+    return res.json(linhas.map(usuarioBasico));
+  }
+
   const linhas = q
     ? db
         .prepare(
@@ -60,42 +66,26 @@ router.put("/me", exigirLogin, (req, res) => {
 // DELETE /api/usuarios/me  (apaga a conta e tudo que é dela)
 router.delete("/me", exigirLogin, (req, res) => {
   db.prepare("DELETE FROM usuarios WHERE id = ?").run(req.usuario.id);
+  removerUsuario(req.usuario.id);
+  favoritos.removerUsuario(req.usuario.id);
+  wishlist.removerUsuario(req.usuario.id);
   res.status(204).end();
 });
 
-// GET /api/usuarios/:id  (perfil público)
-router.get("/:id", loginOpcional, (req, res) => {
+// GET /api/usuarios/:id  (perfil público; seguidores/seguindo/euSigo vêm do serviço social)
+router.get("/:id", loginOpcional, async (req, res) => {
   const usuario = usuarioOuErro(idParam(req.params.id));
-  const seguidores = db.prepare("SELECT COUNT(*) AS n FROM seguidores WHERE seguido_id = ?").get(usuario.id).n;
-  const seguindo = db.prepare("SELECT COUNT(*) AS n FROM seguidores WHERE seguidor_id = ?").get(usuario.id).n;
-  const euSigo = req.usuario
-    ? Boolean(
-        db
-          .prepare("SELECT 1 FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?")
-          .get(req.usuario.id, usuario.id)
-      )
-    : false;
+  const { seguidores, seguindo, euSigo } = await contagens(usuario.id, req.usuario?.id);
 
   const { email, ...publico } = usuarioCompleto(usuario);
   res.json({ ...publico, seguidores, seguindo, euSigo });
 });
 
-// POST/DELETE /api/usuarios/:id/seguir
-router.post("/:id/seguir", exigirLogin, (req, res) => {
-  const alvo = usuarioOuErro(idParam(req.params.id));
-  if (alvo.id === req.usuario.id) throw new ErroHttp(400, "Você não pode seguir a si mesmo.");
-  db.prepare("INSERT OR IGNORE INTO seguidores (seguidor_id, seguido_id) VALUES (?, ?)").run(req.usuario.id, alvo.id);
-  res.status(204).end();
-});
-
-router.delete("/:id/seguir", exigirLogin, (req, res) => {
-  const alvo = usuarioOuErro(idParam(req.params.id));
-  db.prepare("DELETE FROM seguidores WHERE seguidor_id = ? AND seguido_id = ?").run(req.usuario.id, alvo.id);
-  res.status(204).end();
-});
+// Seguir, deixar de seguir e listar seguidores/seguindo agora são do serviço social
+// (services/social). O gateway encaminha /api/usuarios/:id/{seguir,seguidores,seguindo} para ele.
 
 // GET /api/usuarios/:id/resumo  (início do perfil: rotação, atividade, estatísticas, fila)
-router.get("/:id/resumo", (req, res) => {
+router.get("/:id/resumo", async (req, res) => {
   const usuario = usuarioOuErro(idParam(req.params.id));
 
   const rotacaoLinhas = db
@@ -107,13 +97,17 @@ router.get("/:id/resumo", (req, res) => {
   const rotacao = { lendo: [], jogando: [], assistindo: [] };
   for (const o of rotacaoLinhas) rotacao[ACAO_POR_CATEGORIA[o.categoria]].push(obraResumo(o));
 
-  const fila = db
-    .prepare(
-      `SELECT o.* FROM wishlist w JOIN obras o ON o.id = w.obra_id
-       WHERE w.usuario_id = ? ORDER BY w.criado_em DESC LIMIT 3`
-    )
-    .all(usuario.id)
-    .map(obraResumo);
+  // fila = 3 últimas da wishlist (que é do serviço services/wishlist; fora do ar = fila vazia)
+  const idsFila = await wishlistRecentes(usuario.id, 3);
+  const obrasFila = idsFila.length
+    ? new Map(
+        db
+          .prepare(`SELECT * FROM obras WHERE id IN (${idsFila.map(() => "?").join(",")})`)
+          .all(...idsFila)
+          .map((o) => [o.id, o])
+      )
+    : new Map();
+  const fila = idsFila.map((id) => obrasFila.get(id)).filter(Boolean).map(obraResumo);
 
   const atividade = db
     .prepare(`${SELECT_LOG} WHERE l.usuario_id = ? ORDER BY l.data DESC, l.id DESC LIMIT 3`)
@@ -167,28 +161,7 @@ router.get("/:id/acervo", (req, res) => {
   res.json(linhas.map(obraResumo));
 });
 
-// GET /api/usuarios/:id/favoritos  -> { livro: [], serie: [], jogo: [] }
-router.get("/:id/favoritos", (req, res) => {
-  const usuario = usuarioOuErro(idParam(req.params.id));
-  const linhas = db
-    .prepare(
-      `SELECT o.* FROM favoritos f JOIN obras o ON o.id = f.obra_id
-       WHERE f.usuario_id = ? ORDER BY f.criado_em, o.id`
-    )
-    .all(usuario.id);
-  res.json(agrupar(linhas));
-});
-
-// GET /api/usuarios/:id/wishlist  -> { livro: [], serie: [], jogo: [] }
-router.get("/:id/wishlist", (req, res) => {
-  const usuario = usuarioOuErro(idParam(req.params.id));
-  const linhas = db
-    .prepare(
-      `SELECT o.* FROM wishlist w JOIN obras o ON o.id = w.obra_id
-       WHERE w.usuario_id = ? ORDER BY w.criado_em DESC, o.id DESC`
-    )
-    .all(usuario.id);
-  res.json(agrupar(linhas));
-});
+// Favoritos e wishlist (GET /api/usuarios/:id/favoritos e /wishlist) agora são dos serviços
+// services/favoritos e services/wishlist. O gateway encaminha essas rotas para eles.
 
 export default router;

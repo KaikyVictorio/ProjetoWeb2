@@ -1,0 +1,20 @@
+{
+  "name": "wishlist",
+  "version": "1.0.0",
+  "description": "Microsserviço de wishlist do Estante Virtual",
+  "main": "src/index.js",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test test/wishlist.test.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
