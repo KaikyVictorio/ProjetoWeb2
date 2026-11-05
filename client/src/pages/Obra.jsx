@@ -8,6 +8,7 @@ import { api } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useLogs } from "../context/LogsContext";
 import { useApi } from "../hooks/useApi";
+import Avatar from "../components/Avatar"
 
 const POR_LOTE = 10;
 
@@ -67,7 +68,7 @@ function ReviewItem({ r }) {
   return (
     <li className="flex gap-4 py-5">
       <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-full border-2 border-neutral-700 bg-slate-700 font-bold text-slate-300">
-        {r.foto ? <img src={r.foto} alt="" className="h-full w-full object-cover" /> : r.usuario[0].toUpperCase()}
+        <Avatar src={r.foto} nome={r.usuario} className="h-full w-full" />
       </div>
 
       <div className="min-w-0 flex-1 text-left">

@@ -54,6 +54,9 @@ router.get("/", (req, res) => {
   const { limite, offset } = paginacao(req.query);
   const condicoes = [];
   const params = [];
+    if (req.query.origem === "externa") {
+    condicoes.push("fonte IS NOT NULL AND id_externo IS NOT NULL");
+  }
 
   const q = texto(req.query.q, 100);
   if (q) {
@@ -71,6 +74,73 @@ router.get("/", (req, res) => {
     .all(...params, limite, offset);
   res.json(linhas.map(obraJson));
 });
+
+
+// POST /api/obras/importar
+router.post("/importar", exigirLogin, (req, res) => {
+  const idExterno = texto(req.body.id, 100);
+
+  if (!idExterno || !idExterno.includes(":")) {
+    throw new ErroHttp(400, "ID externo invalido.");
+  }
+
+  const [prefixo, ...partes] = idExterno.split(":");
+  const idOriginal = partes.join(":");
+
+  const fontes = {
+    tvmaze: "serie",
+    ol: "livro",
+    ftg: "jogo",
+  };
+
+  const fonte = prefixo;
+  const categoriaEsperada = fontes[fonte];
+
+  if (!categoriaEsperada) {
+    throw new ErroHttp(400, "Fonte externa nao suportada.");
+  }
+
+  const d = dadosDaObra(req.body);
+
+  if (d.categoria !== categoriaEsperada) {
+    throw new ErroHttp(400, "Categoria nao corresponde a fonte externa.");
+  }
+
+  const existente = db
+    .prepare("SELECT * FROM obras WHERE fonte = ? AND id_externo = ?")
+    .get(fonte, idOriginal);
+
+  if (existente) {
+    return res.json(obraJson(existente));
+  }
+
+  db.prepare(
+    `INSERT OR IGNORE INTO obras
+      (titulo, ano, categoria, imagem, autor, generos, sinopse, criado_por, fonte, id_externo)
+     VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, ?)`
+  ).run(
+    d.titulo,
+    d.ano,
+    d.categoria,
+    d.imagem,
+    d.autor,
+    d.generos,
+    d.sinopse,
+    fonte,
+    idOriginal
+  );
+
+  const obra = db
+    .prepare("SELECT * FROM obras WHERE fonte = ? AND id_externo = ?")
+    .get(fonte, idOriginal);
+
+  if (!obra) {
+    throw new ErroHttp(500, "Nao foi possivel importar a obra.");
+  }
+
+  res.status(201).json(obraJson(obra));
+});
+
 
 // POST /api/obras
 router.post("/", exigirLogin, (req, res) => {

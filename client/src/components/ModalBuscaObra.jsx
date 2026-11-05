@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../api";
 import TagTipo from "./TagTipo";
 import { useBuscaObras } from "../hooks/useBuscaObras";
 
@@ -8,7 +9,13 @@ import { useBuscaObras } from "../hooks/useBuscaObras";
 //   ocultarIds: obras que já estão na coleção e não devem aparecer
 export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onEscolher, onClose }) {
   const [busca, setBusca] = useState("");
-  const { resultados, buscando, erro } = useBuscaObras(busca, { categoria, limite: 12 });
+  const [importandoId, setImportandoId] = useState(null);
+  const [erroImportacao, setErroImportacao] = useState("");
+
+  const { resultados, buscando, erro } = useBuscaObras(busca, {
+    categoria,
+    limite: 12,
+  });
 
   useEffect(() => {
     const fechar = (e) => e.key === "Escape" && onClose();
@@ -18,8 +25,32 @@ export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onE
 
   const visiveis = resultados.filter((o) => !ocultarIds.includes(o.id));
 
+  async function escolher(obra) {
+    if (importandoId !== null) return;
+
+    setErroImportacao("");
+    setImportandoId(obra.id);
+
+    try {
+      let obraLocal = obra;
+
+      // IDs com ":" identificam resultados que ainda estão na API externa.
+      if (String(obra.id).includes(":")) {
+        obraLocal = await api.post("/obras/importar", obra);
+      }
+
+      await onEscolher(obraLocal);
+    } catch (e) {
+      setErroImportacao(e.message || "Não foi possível importar a obra.");
+      setImportandoId(null);
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      onClick={onClose}
+    >
       <div
         role="dialog"
         aria-modal="true"
@@ -29,7 +60,12 @@ export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onE
       >
         <header className="flex shrink-0 items-center justify-between border-b-2 border-neutral-300 bg-[radial-gradient(ellipse_at_center,#f0f0f0_35%,#fff_100%)] px-5 py-3">
           <h2 className="m-0! font-mono text-lg! font-bold">{titulo}</h2>
-          <button type="button" onClick={onClose} aria-label="Fechar" className="text-2xl leading-none">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar"
+            className="text-2xl leading-none"
+          >
             ×
           </button>
         </header>
@@ -44,8 +80,21 @@ export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onE
           />
 
           {erro && <p className="mt-3 text-sm text-red-700">{erro}</p>}
+
+          {erroImportacao && (
+            <p className="mt-3 text-sm text-red-700">{erroImportacao}</p>
+          )}
+
+          {importandoId !== null && (
+            <p className="mt-3 text-sm text-neutral-600">
+              Importando obra...
+            </p>
+          )}
+
           {!erro && !buscando && visiveis.length === 0 && (
-            <p className="mt-3 text-sm text-neutral-500">Nada encontrado.</p>
+            <p className="mt-3 text-sm text-neutral-500">
+              Nada encontrado.
+            </p>
           )}
 
           <ul className="mt-3 divide-y divide-neutral-300">
@@ -53,28 +102,31 @@ export default function ModalBuscaObra({ titulo, categoria, ocultarIds = [], onE
               <li key={o.id}>
                 <button
                   type="button"
-                  onClick={() => onEscolher(o)}
-                  className="flex w-full items-center gap-3 px-1 py-2 text-left hover:bg-neutral-100"
+                  disabled={importandoId !== null}
+                  onClick={() => escolher(o)}
+                  className="flex w-full items-center gap-3 px-1 py-2 text-left hover:bg-neutral-100 disabled:cursor-wait disabled:opacity-50"
                 >
                   <span className="h-12 w-8 shrink-0 overflow-hidden border border-neutral-600 bg-neutral-300">
-                    {o.imagem && <img src={o.imagem} alt="" className="h-full w-full object-cover" />}
+                    {o.imagem && (
+                      <img
+                        src={o.imagem}
+                        alt=""
+                        className="h-full w-full object-cover"
+                      />
+                    )}
                   </span>
+
                   <span className="min-w-0 flex-1 font-menu">
-                    <strong>{o.titulo}</strong> <span className="text-neutral-600">{o.ano}</span>
+                    <strong>{o.titulo}</strong>{" "}
+                    <span className="text-neutral-600">{o.ano}</span>
                   </span>
+
                   <TagTipo tipo={o.categoria} />
                 </button>
               </li>
             ))}
           </ul>
 
-          <p className="mt-4 text-xs text-neutral-600">
-            Não achou?{" "}
-            <Link to="/obras/nova" onClick={onClose} className="underline">
-              cadastre a obra
-            </Link>
-            .
-          </p>
         </div>
       </div>
     </div>

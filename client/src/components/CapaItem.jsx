@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function CapaItem({ item, className = "aspect-[2/3]", posicao, onRemover }) {
   return (
     <div
-      className={`rounded-xs group relative w-full overflow-hidden border-2 border-neutral-600 bg-neutral-300 ${className}`}
+      className={`rounded-sm group relative w-full overflow-hidden border-1 border-neutral-400 bg-neutral-300 ${className}`}
     >
       {posicao && (
         <span className="absolute left-1 top-1 z-10 rounded-md border-2 border-black bg-white px-1.5 py-0.5 font-mono text-xs font-bold text-black shadow-[2px_2px_0_0_#000]">
